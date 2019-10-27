@@ -19,11 +19,14 @@ const chapters = require('./chapters');
 const modeSetter = mode => state => L.set('mode', mode, state);
 
 const renderCrocodile = name =>
-      h('div', { class: 'croco' }, 'crocodile');
+      h('div', {}, [
+        h('img', { class: 'croco', src: 'img/crocodiles/blue_body.svg' }, 'crocodile'),
+        h('img', { class: 'jaw', src: 'img/crocodiles/blue_jaws.svg' }, 'crocodile'),
+      ]);
 
 const renderTerm = (binders, term) => {
   if (term instanceof Var) {
-    return h('div', { class: 'egg' }, '(egg)');
+    return h('img', { class: 'egg', src: 'img/crocodiles/blue_egg.svg' }, '(egg)');
   }
 
   if (term instanceof App) {
