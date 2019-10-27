@@ -1,0 +1,25 @@
+{
+  "name": "crocodiles-game",
+  "private": true,
+  "version": "0.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build-dev": "parcel build --target browser --out-file dist/dist.js src/app.js",
+    "build": "parcel build --no-source-maps --target browser --out-file dist/dist.js src/app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/econovika/Crocodiles.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/econovika/Crocodiles/issues"
+  },
+  "homepage": "https://github.com/econovika/Crocodiles#readme",
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
+}
