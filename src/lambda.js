@@ -28,6 +28,12 @@ class Lam extends Expr {
     }
 }
 
+class Placeholder extends Expr {
+    constructor() {
+        super();
+    }
+}
+
 //data Expr = Var Symb
 // | Expr :@ Expr
 // | Lam Symb Expr
@@ -87,6 +93,10 @@ function dfs(expr) {
     if (expr instanceof Lam) {
         return "\\_." + dfs(expr.expr);
     }
+
+    if (expr instanceof Placeholder) {
+        return "\"Placeholder\"";
+    }
 }
 
 
@@ -95,6 +105,7 @@ module.exports = {
     Var,
     App,
     Lam,
+    Placeholder,
     dfs,
     make_reduction_step,
 }

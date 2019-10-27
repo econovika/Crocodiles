@@ -3,6 +3,7 @@ const {
     Var,
     App,
     Lam,
+    Placeholder,
     dfs,
     make_reduction_step
 } = require('./lambda.js');
@@ -49,7 +50,14 @@ function test_4() {
     console.log(dfs(x));
 }
 
+function test_5() {
+    x = new App(new Placeholder(), new Placeholder());
+
+    console.log(dfs(x));
+}
+
 test_1();
 test_2();
 test_3();
 test_4();
+test_5();
