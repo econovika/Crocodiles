@@ -1,18 +1,8 @@
-module.exports = {
-    Expr,
-    Var,
-    App,
-    Lam,
-    dfs,
-    test
-}
-
 
 class Expr {
     constructor() {
-
+        
     }
-
 }
 
 
@@ -46,11 +36,31 @@ class Lam extends Expr {
 
 
 function dfs(expr) {
-    console.log(expr instanceof App ? "1" : "0")
+    // console.log(expr instanceof App ? "1" : "0")
+
+    if (expr instanceof Var) {
+        return expr.name;
+    }
+
+    if (expr instanceof App) {
+        return "(" + dfs(expr.expr1) + ")(" + dfs(expr.expr2) + ")";
+    }
+
+    if (expr instanceof Lam) {
+        return "\\" + expr.name + "." + dfs(expr.expr);
+    }
 }
 
 function test() {
-    dfs(new App(new Var("1"), new Var("2")));
+    console.log(dfs(new App(new Lam("x", new Var("x")), new Var("2"))));
 
 }
 
+module.exports = {
+    Expr,
+    Var,
+    App,
+    Lam,
+    dfs,
+    test
+}
