@@ -17,7 +17,6 @@ function f(n) {
     return f(n-1) + f(n-2);
 }
 
-
 for (i = 0; i < 10; ++i) {
     console.log(f(i));
 }
