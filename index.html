@@ -15,38 +15,45 @@
           background-size: cover;
           text-align: center;
       }
-
+      .container {
+ 
+      }
       .container-select {
-          background-color: #4CAF50; /* Green background */
-          border: 1px solid green; /* Green border */
-          color: white; /* White text */
-          padding: 10px 24px; /* Some padding */
-          cursor: pointer; /* Pointer/hand icon */
-          width: 50%; /* Set a width if needed */
-          height: 80%;
-          display: block; /* Make the buttons appear below each other */
-          margin: 10% auto;
-        }
+          margin: 2.5% auto;
+          background-repeat: no-repeat;
+          background-size: contain;
+          width: 280px;
+          height: 100px;
+      }
+
+      
 
       .container-select:active {
           background-color: green;
-          box-shadow: 0 5px #666;
           transform: translateY(4px);
       }
 
-      .container {
-          display: none;
+      #button-main {
+          background-image: url("img/button_play.svg");
       }
-      
+      #button-chapters {
+          background-image: url("img/button_chapters.svg");
+      }
+      #button-score {
+          background-image: url("img/button_score.svg");
+      }
+      #button-settings {
+          background-image: url("img/button_settings.svg");
+      }
     </style>
   </head>
   <body>
     <div id="menu-box" class="container">
       <div>
-	<div class="container-select" id="button-main">Start</div>
-	<div class="container-select" id="button-chapters">Chapters</div>
-	<div class="container-select" id="button-score">Score</div>
-      	<div class="container-select" id="button-settings">Settings</div>
+	<div class="container-select" id="button-main"></div>
+	<div class="container-select" id="button-chapters"></div>
+	<div class="container-select" id="button-score"></div>
+      	<div class="container-select" id="button-settings"></div>
       </div>
     </div>
     <div id="main-box" class="container">
