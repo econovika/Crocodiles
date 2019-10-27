@@ -4,13 +4,10 @@ const {
     App,
     Lam,
     dfs,
-    test
 } = require('./lambda.js');
 
 
-alert("Hello, world!");
-
-
+// alert("Hello, world!");
 
 function f(n) {
     if (n == 0 || n == 1) {
@@ -26,5 +23,3 @@ for (i = 0; i < 10; ++i) {
 }
 
 console.log(new Expr());
-
-test();
