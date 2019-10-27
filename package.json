@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/econovika/Crocodiles#readme",
   "devDependencies": {
-    "parcel": "^1.12.4"
+    "hyperapp": "^2.0.3",
+    "parcel": "^1.12.4",
+    "partial.lenses": "^14.17.0"
   }
 }
