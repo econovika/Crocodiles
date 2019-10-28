@@ -127,8 +127,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     view: state => {
       console.log(state);
+      let mainView = [];
+
       if (state.mode == MENU) {
-        return h(
+        mainView = h(
           'div', {},
           [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
             mode => h(
@@ -143,10 +145,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       if (state.mode == MAIN) {
-        return renderSwamp(state);
+        mainView = renderSwamp(state);
       }
 
-      return h('div', {}, ':(');
+      return h('div', {}, [
+        h('div', { id: 'toolbar' }, [
+          // Add button here
+        ]),
+        mainView
+      ]);
     },
     node: document.getElementById("app")
   });
