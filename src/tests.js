@@ -6,7 +6,8 @@ const {
     Placeholder,
     insertIntoPlaceholder,
     make_reduction_step,
-    deep_copy
+    deep_copy,
+    substitution,
 } = require('./lambda.js');
 
 
@@ -64,7 +65,19 @@ function test_4() {
 
     console.log(x.toString());
 
-    console.log('');
+  console.log('4.z');
+  const z = new App(new Lam(new Var(0)),
+                    new Lam(new Var(0)));
+  console.log(z);
+  console.log('MUST BE LAMBDA', make_reduction_step(z));
+  console.log(make_reduction_step(new Var(0)));
+
+  console.log('4.z.2');
+  const a = new Var(0);
+  const b = new Lam(new Var(0));
+  console.log('a:', a, 'b:', b);
+  console.log('a [0:=b]', substitution(a, b, 0));
+
 }
 
 function test_5() {
@@ -103,7 +116,6 @@ function test_deepcopy() {
 
     console.log(x.toString());
     console.log(y.toString());
-
 
     console.log('');
 }

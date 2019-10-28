@@ -5,6 +5,7 @@ const {
   Lam,
   Placeholder,
   insertIntoPlaceholder,
+  make_reduction_step,
   deep_copy,
 } = require('./lambda.js');
 
@@ -21,15 +22,23 @@ const chapters = require('./chapters');
 const modeSetter = mode => state => L.set('mode', mode, state);
 
 const deep_copy_state = state => {
-  return {
+  const obj = {
     mode: state.mode,
     chapter: state.chapter,
     chapters: state.chapters,
     swamp: deep_copy(state.swamp),
     goal: deep_copy(state.goal),
     input: deep_copy(state.input),
-  }
-}
+  };
+
+  console.log('copy', state.history);
+
+  obj.history = state.history.concat(
+    [ Object.assign({}, obj) ]
+  );
+
+  return obj;
+};
 
 const deleteCrocodile = name => state => {
   const state_ = deep_copy_state(state);
@@ -49,7 +58,7 @@ const insertEgg = placeholder => state => {
   state.swamp = insertIntoPlaceholder(
     placeholder.id,
     state.swamp,
-    new Var()
+    new Var(0)
   );
   return Object.assign({}, state);
 };
@@ -119,11 +128,26 @@ const changeCrocodileColor = state => {
   return state;
 };
 
-const copyState = state => {
-  const newState = Object.assign({}, state);
-  // TODO: replace
-  // newState.swamp = deepcopy(state.swamp);
+const forward = state => {
+  const newState = deep_copy_state(state);
+  const new_swamp = make_reduction_step(newState.swamp);
+  if (new_swamp === null) {
+    return state;
+  }
+  newState.swamp = new_swamp;
   return newState;
+};
+
+const back = state => {
+  console.log('back', state.history);
+  const oldState = state.history.slice(-1)[0];
+  if (typeof oldState === 'undefined') {
+    console.log('no older state');
+    return state;
+  } else {
+    console.log('old state', oldState);
+    return oldState;
+  }
 };
 
 const renderTerm = (binders, term) => {
@@ -142,9 +166,17 @@ const renderTerm = (binders, term) => {
     if (term.left instanceof Lam) {
       return h(
         'div',
-        { class: 'row' },
-        [ renderTerm(binders, term.left),
-          renderTerm(binders, term.right)
+        { class: 'col' },
+        [ h(
+          'div',
+          { },
+          renderTerm(binders, term.left),
+        ),
+          h(
+            'div',
+            {},
+            renderTerm(binders, term.right)
+          )
         ]);
     } else {
       return h(
@@ -206,7 +238,10 @@ document.addEventListener('DOMContentLoaded', () => {
     init: { mode: MENU,
             chapter: 0,
             chapters: chapters,
-            swamp: new Placeholder()
+            swamp: // new Placeholder(),
+            new App(new Lam(new Var(0)),
+                    new Lam(new Var(0))),
+            history: [],
             // new Lam(new App (new Var(0),
             //                         new App (new Var(1),
             //                                  new Placeholder())))
@@ -241,8 +276,25 @@ document.addEventListener('DOMContentLoaded', () => {
           { id: 'toolbar' },
           [].concat(
             state.mode == MENU ? [] : [
-              h('div', {class: 'container-menu', id: 'button-menu', onClick: modeSetter(MENU)})
+              h('div', { class: 'container-menu',
+                         id: 'button-menu',
+                         onClick: modeSetter(MENU)
+                       }
+               )
             ]
+          ).concat(
+            state.mode == MAIN ? [
+              h('div', { class: 'button',
+                         id: 'button-back',
+                         onClick: back
+                       },
+                'back'),
+              h('div', { class: 'button',
+                         id: 'button-forward',
+                         onClick: forward
+                       },
+                'forward'),
+            ] : []
           )
          ),
         mainView
