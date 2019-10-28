@@ -1,6 +1,6 @@
 body
 {
-    width: 1024px;
+    /* width: 1024px; */
     height: 768px;
     margin: 100px auto;
     border: 10px solid rgb(7, 97, 7);
@@ -17,6 +17,21 @@ body
 }
 
 .container-select:active {
+    transform: translateY(4px);
+}
+
+.container-menu {
+    margin: 4% auto;
+    position: relative;
+    top: -32px;
+    right: -468px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 190px;
+    height: 75px;
+}
+
+.container-menu:active {
     transform: translateY(4px);
 }
 
@@ -40,7 +55,7 @@ body
     animation-duration: 0.92s;
     animation-iteration-count: infinite;
     position: relative;
-    left: -155px;
+    left: -150px;
     top: -30px;
 }
 
@@ -48,32 +63,84 @@ body
     display: flex;
 }
 
+.row {
+    display: flex;
+}
+
+.left {
+    float: left;
+}
+
+.right {
+    float: right;
+}
+
 #swamp {
+    max-height: 800px;
+    min-height: 800px;
+    min-width: 50%;
+    overflow: auto;
     width: 50%;
     margin: 0 auto;
     background-color: green;
 }
 
 .croco-container {
+    display: table;
+    margin: 0 auto;
     white-space: nowrap;
 }
 
 .placeholder {
-    height: 70px;
-    width: 70px;
+    height: 120px;
+    width: 120px;
     background-color: rgba(0,0,0,0.1);
     border-style: dashed;
     border-color: #999;
 }
 
 .egg {
-    width: 100px;
-    height: 70px;
+    width: 130px;
+    height: 130px;
 }
 
 .croco {
-    width: 100px;
-    height: 70px;
+    /* width: 100px;
+    height: 70px;*/
+}
+
+.insert-crocodile, .insert-egg, .insert-placeholders {
+    display: none;
+}
+
+.insert-placeholders-preview {
+    border: 4px dashed #999;
+    width: 30px;
+    height: 30px;
+}
+
+.placeholder:hover .insert-placeholders {
+    display: flex;
+}
+
+.insert-placeholders-preview {
+    margin: 0 auto;
+    cursor: pointer;
+}
+
+.placeholder:hover .insert-crocodile,
+.placeholder:hover .insert-egg {
+    display: block;
+}
+
+.insert-crocodile-img {
+    width: 60px;
+    cursor: pointer;
+}
+
+.insert-egg-img {
+    width: 60px;
+    cursor: pointer;
 }
 
 #button-main {
@@ -90,4 +157,8 @@ body
 
 #button-settings {
     background-image: url("../img/button_settings.svg");
+}
+
+#button-menu {
+    background-image: url("../img/menu2_button.svg");
 }
