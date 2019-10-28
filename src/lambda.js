@@ -8,7 +8,7 @@ class Expr {
 class Var extends Expr {
     constructor(name) {
         super();
-        this.name = name;
+        this.name = name; // number
     }
 }
 
@@ -22,10 +22,15 @@ class App extends Expr {
 }
 
 class Lam extends Expr {
-    constructor(name, expr) {
+    constructor(expr) {
         super();
-        this.name = name;
         this.expr = expr;
+    }
+}
+
+class Placeholder extends Expr {
+    constructor() {
+        super();
     }
 }
 
@@ -50,7 +55,7 @@ function substitution(expr, expr_into, var_name) {
     }
 
     if (expr instanceof Lam) {
-        return new Lam(expr.name, substitution(expr.expr, expr_into, var_name));
+        return new Lam(substitution(expr.expr, expr_into, var_name + 1));
     }
 }
 
@@ -68,8 +73,8 @@ function make_reduction_step(expr) {
             return reduction_step(expr.expr_left);
         }
         if (expr.expr_left instanceof Lam) {
-            
-            return substitution(expr.expr_left.expr, expr.expr_right, expr.expr_left.name);
+
+            return substitution(expr.expr_left.expr, expr.expr_right, 0); // expr.expr_left.name
         }
     }
 }
@@ -86,7 +91,11 @@ function dfs(expr) {
     }
 
     if (expr instanceof Lam) {
-        return "\\" + expr.name + "." + dfs(expr.expr);
+        return "\\_." + dfs(expr.expr);
+    }
+
+    if (expr instanceof Placeholder) {
+        return "\"Placeholder\"";
     }
 }
 
@@ -96,6 +105,7 @@ module.exports = {
     Var,
     App,
     Lam,
+    Placeholder,
     dfs,
     make_reduction_step,
 }

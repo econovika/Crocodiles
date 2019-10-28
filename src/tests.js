@@ -3,6 +3,7 @@ const {
     Var,
     App,
     Lam,
+    Placeholder,
     dfs,
     make_reduction_step
 } = require('./lambda.js');
@@ -10,7 +11,7 @@ const {
 
 
 function test_1() {
-    x = new App(new Lam("x", new Var("x")), new Var("2"));
+    x = new App(new Lam(new Var(0)), new Var("222"));
 
     console.log(dfs(x));
 
@@ -20,7 +21,7 @@ function test_1() {
 }
 
 function test_2() {
-    x = new App(new Lam("x", new Lam("y", new Var("x"))), new Var("2"));
+    x = new App(new Lam(new Lam(new Var(1))), new Var("2"));
 
     console.log(dfs(x));
 
@@ -30,7 +31,7 @@ function test_2() {
 }
 
 function test_3() {
-    x = new App(new Lam("x", new Lam("y", new Var("y"))), new Var("2"));
+    x = new App(new Lam(new Lam(new Var(0))), new Var("2"));
 
     console.log(dfs(x));
 
@@ -40,7 +41,7 @@ function test_3() {
 }
 
 function test_4() {
-    x = new App(new Lam("x", new Lam("y", new Var("y"))), new Var("2"));
+    x = new App(new Lam(new Lam(new Var(1))), new Var("2"));
 
     console.log(dfs(x));
 
@@ -49,7 +50,14 @@ function test_4() {
     console.log(dfs(x));
 }
 
+function test_5() {
+    x = new App(new Placeholder(), new Placeholder());
+
+    console.log(dfs(x));
+}
+
 test_1();
 test_2();
 test_3();
 test_4();
+test_5();
