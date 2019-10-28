@@ -23,8 +23,8 @@ body
 .container-menu {
     margin: 4% auto;
     position: relative;
-    top: -38px;
-    right: -538px;
+    top: -32px;
+    right: -468px;
     background-repeat: no-repeat;
     background-size: contain;
     width: 190px;
@@ -160,5 +160,5 @@ body
 }
 
 #button-menu {
-    background-image: url("../img/menu_button.svg");
+    background-image: url("../img/menu2_button.svg");
 }
