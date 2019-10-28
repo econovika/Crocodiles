@@ -101,13 +101,18 @@ body
 }
 
 .insert-placeholders-preview {
-    border: 2px dotted #444;
+    border: 4px dashed #999;
     width: 30px;
     height: 30px;
 }
 
 .placeholder:hover .insert-placeholders {
     display: flex;
+}
+
+.insert-placeholders-preview {
+    margin: 0 auto;
+    cursor: pointer;
 }
 
 .placeholder:hover .insert-crocodile,

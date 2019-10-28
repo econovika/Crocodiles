@@ -83,7 +83,6 @@ const renderPlaceholder = placeholder =>
                       onClick: insertPlaceholders(placeholder)
                     },
             [ h('div', { class: 'insert-placeholders-preview' }),
-              h('div', { class: 'insert-placeholders-preview' })
             ]
            )
 
@@ -175,7 +174,7 @@ document.addEventListener('DOMContentLoaded', () => {
     init: { mode: MENU,
             chapter: 0,
             chapters: chapters,
-            swamp: new Lam(new App(new Placeholder(), new Var(2)))
+            swamp: new Placeholder()
             // new Lam(new App (new Var(0),
             //                         new App (new Var(1),
             //                                  new Placeholder())))
