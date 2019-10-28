@@ -174,5 +174,5 @@ module.exports = {
     Placeholder,
     insertIntoPlaceholder,
     make_reduction_step,
-    deep_copy
+    deep_copy,
 }
