@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <script src="/home/ksenia/Crocodiles/dist/app.js"></script>
+    <style>
+      #menu-box {
+          width: 600px;
+          height: 480px;
+          margin: 100px auto;
+          box-shadow: 0px 0px 10px 2px grey;
+          border: 10px solid yellow;
+          background-color: green;
+          background-size: cover;
+          text-align: center;
+      }
+      .container-select {
+          margin: 2.5% auto;
+          background-repeat: no-repeat;
+          background-size: contain;
+          width: 280px;
+          height: 100px;
+      }
+      
+      .container-select:active {
+          background-color: green;
+          transform: translateY(4px);
+      }
+
+      .container {
+          width: 960px;
+          margin: 50px auto;
+      }
+
+      #croc {
+          display: inline-block;
+        }
+        img:nth-child(1) {background:none; width: 30%;}
+        img:nth-child(2) {background:none; width: 10%}
+        /*
+        .alternate img {
+          -webkit-animation: shake .7s linear alternate infinite;
+          animation: shake 5s linear alternate infinite;
+        }
+        */
+
+        #button-main {
+          background-image: url("/home/ksenia/Crocodiles/img/button_play.svg");
+      }
+
+      #jaw {
+          animation-name: moving;
+          animation-duration: 0.92s;
+          animation-iteration-count: infinite;
+          position: relative;
+          left: -65px;
+          top: -17px;
+      }
+      @-webkit-keyframes shake {
+        100% {
+          -webkit-transform: translateX(-60px);    
+        }
+      }
+      @keyframes shake {
+        100% {
+          transform: translateX(-60px);  
+        }
+      }
+      @keyframes moving {
+        0% {
+            transform: rotate(-40deg)  /*translateX(30px)*/;
+            transform-origin:  50% 50%;
+            /*transform: translateX(-60px);*/
+        }
+        50% {
+            transform: rotate(0);
+            transform-origin:  50% 50%;
+        }
+        100% {
+            transform: rotate(-40deg) /*ranslateX(30px)*/;
+            transform-origin:  50% 50%;
+
+            /*webkit-transform: translateX(-60px);    */
+        }
+    }
+    </style>
+  </head>
+  <body>
+    <div id="menu-box" class="container">
+        <div class="alternate">
+          <div id="croc">
+            <img src="/home/ksenia/Crocodiles/img/crocodiles/aqua_body.svg" />
+            <img id="jaw" src="/home/ksenia/Crocodiles/img/crocodiles/aqua_jaws.svg">
+          </div>
+          <!--
+            <img src="/home/ksenia/Crocodiles/img/crocodiles/orange_body.svg" />
+            <img  src="/home/ksenia/Crocodiles/img/crocodiles/violet_body.svg" />
+            -->
+        </div>
+	<div class="container-select" id="button-main"></div>
+  </body>
+</html>
