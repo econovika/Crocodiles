@@ -60,19 +60,30 @@ const renderPlaceholder = placeholder =>
         [ h('span', { class: 'insert-crocodile',
                       onClick: insertCrocodile(placeholder)
                     },
-            '+cro'
+            h('span', { class: 'insert-crocodile' }, [
+              h('img', {
+                src: 'img/crocodiles/green_body.svg',
+                class: 'insert-crocodile-img'
+              })
+            ])
            ),
 
           h('span', { class: 'insert-egg',
                       onClick: insertEgg(placeholder)
                     },
-            '+egg'
+            [
+              h('img', {
+                src: 'img/crocodiles/green_egg.svg',
+                class: 'insert-egg-img'
+              })
+            ]
            ),
 
           h('span', { class: 'insert-placeholders',
                       onClick: insertPlaceholders(placeholder)
                     },
-            '+2'
+            [ h('div', { class: 'insert-placeholders-preview' }),
+            ]
            )
 
         ]
@@ -82,20 +93,65 @@ const renderCrocodile = name =>
       h('div', { class: 'croco-container' }, [
         h('img', { class: 'croco', src: 'img/crocodiles/blue_body.svg' }),
         h('img', { class: 'jaw', src: 'img/crocodiles/blue_jaws.svg' }),
-        h('div', { class: 'delete', onClick: deleteCrocodile(name) }, 'del')
+        h(
+          'div',
+          { class: 'delete', onClick: deleteCrocodile(name) },
+          ''
+        )
       ]);
 
+const changeEggColor = state => {
+  return state;
+};
+
+const changeCrocodileColor = state => {
+  return state;
+};
+
+const copyState = state => {
+  const newState = Object.assign({}, state);
+  // TODO: replace
+  // newState.swamp = deepcopy(state.swamp);
+  return newState;
+};
+
 const renderTerm = (binders, term) => {
+
   if (term instanceof Var) {
-    return h('img', { class: 'egg', src: 'img/crocodiles/blue_egg.svg' }, '(egg)');
+    return h(
+      'div',
+      { class: 'egg' }, [
+        h('img', { class: 'egg',
+                   onClick: changeEggColor,
+                   src: 'img/crocodiles/blue_egg.svg' }),
+      ]);
   }
 
   if (term instanceof App) {
-    // Check if a redex. 'row' = yes
-    return h('div', { class: term.left instanceof Lam ? 'row' : 'col' },
-             [ renderTerm(binders, term.left),
-               renderTerm(binders, term.right)
-             ]);
+    if (term.left instanceof Lam) {
+      return h(
+        'div',
+        { class: 'row' },
+        [ renderTerm(binders, term.left),
+          renderTerm(binders, term.right)
+        ]);
+    } else {
+      return h(
+        'div',
+        { class: 'row' }, [
+          h(
+            'div',
+            { class: 'left' },
+            renderTerm(binders, term.left)
+          ),
+          h(
+            'div',
+            { class: 'right' },
+            renderTerm(binders, term.right)
+          )
+        ]
+      );
+    }
   }
 
   if (term instanceof Lam) {
@@ -114,12 +170,32 @@ const renderTerm = (binders, term) => {
 
 const renderSwamp = state => h('div', { id: 'swamp' }, renderTerm([], state.swamp));
 
+const selectChapter = ix => state => {
+  state.chapter = ix;
+  console.log(state);
+  state.goal = state.chapters[ix].goal;
+  state.input = state.chapters[ix].input;
+  state.swamp = new Placeholder();
+  state.mode = MAIN;
+  return Object.assign({}, state);
+};
+
+const renderChapters = state => h(
+  'div', { class: 'chapters' },
+  state.chapters.map(
+    ({ title, goal, input }, ix) =>
+      h('div', { class: 'chapter-select',
+                 onClick: selectChapter(ix)}, title)
+  )
+);
+
 document.addEventListener('DOMContentLoaded', () => {
   app({
     // Startup state
     init: { mode: MENU,
             chapter: 0,
-            swamp: new Lam(new App(new Placeholder(), new Var(2)))
+            chapters: chapters,
+            swamp: new Placeholder()
             // new Lam(new App (new Var(0),
             //                         new App (new Var(1),
             //                                  new Placeholder())))
@@ -131,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (state.mode == MENU) {
         mainView = h(
-          'div', {},
+          'div', { id: 'menu-buttons' },
           [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
             mode => h(
               'div',
@@ -147,13 +223,20 @@ document.addEventListener('DOMContentLoaded', () => {
       if (state.mode == MAIN) {
         mainView = renderSwamp(state);
       }
+
       return h('div', {}, [
-        h('div', { id: 'toolbar' }, [].concat(
-        state.mode == MENU ? [] : [h('div', {class: 'container-select', id: 'button-menu', onClick: modeSetter(MENU)})]
-        )
-      ),
+        h(
+          'div',
+          { id: 'toolbar' },
+          [].concat(
+            state.mode == MENU ? [] : [
+              h('div', {class: 'container-menu', id: 'button-menu', onClick: modeSetter(MENU)})
+            ]
+          )
+         ),
         mainView
       ]);
+
     },
     node: document.getElementById("app")
   });

@@ -8,7 +8,7 @@ const {
 
 module.exports = [
   { title: 'Title 1',
-    goal: new Lam('x', new Var('x')),
-    input: new Lam('x', new  Var('x')),
+    goal: new Lam(new Var(0)),
+    input: new Lam(new  Var(0)),
   }
 ];
