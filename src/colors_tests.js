@@ -11,9 +11,9 @@ function test_1() {
 
 
     free_color(x1)
-    get_free_color()
+    y1 = get_free_color()
 
-    // console.log(y1)
+    console.log(y1)
     console.log(x1)
     console.log(x2)
     console.log(x3)

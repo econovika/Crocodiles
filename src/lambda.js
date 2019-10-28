@@ -129,25 +129,24 @@ function insertIntoPlaceholder (placeholderId, expr, newExpr) {
     throw new Error("Incorrect term");
 }
 
-function substitution(expr, expr_into, var_name) {
+function substitution(expr, expr_into, ix) {
     if (expr instanceof Var) {
-
-        if (expr.ix == var_name) {
-            return expr_into;
+        if (expr.ix == ix) {
+            // make substitution here!
+            return deep_copy(expr_into);
         }
-
         return expr;
     }
 
     if (expr instanceof App) {
       return new App(
-        substitution(expr.left, expr_into, var_name),
-        substitution(expr.right, expr_into, var_name)
+        substitution(expr.left, expr_into, ix),
+        substitution(expr.right, expr_into, ix)
       );
     }
 
     if (expr instanceof Lam) {
-        return new Lam(substitution(expr.expr, expr_into, var_name + 1));
+        return new Lam(substitution(expr.expr, expr_into, ix + 1));
     }
 }
 
@@ -187,6 +186,8 @@ function make_reduction_step(expr) {
       }
     }
   }
+
+  throw new Error();
 };
 
 function get_list_variables(expr, placeholder_in_expr, list) {
@@ -228,5 +229,5 @@ module.exports = {
     make_reduction_step,
     deep_copy,
     get_list_variables,
-    substitution
+    substitution,
 }
