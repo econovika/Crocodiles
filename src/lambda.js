@@ -2,6 +2,7 @@ const mkId = require('./id');
 
 class Expr {
     constructor() {
+        this.id = mkId();
     }
 }
 
@@ -61,7 +62,6 @@ class Lam extends Expr {
 class Placeholder extends Expr {
     constructor() {
         super();
-        this.id = mkId();
     }
 
     toString() {
@@ -71,7 +71,7 @@ class Placeholder extends Expr {
     equals (expr) {
         if (!(expr instanceof Placeholder))
             return false;
-        return this.id ==  expr.id;
+        return true;
     }
 }
  
