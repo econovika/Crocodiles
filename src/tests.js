@@ -6,7 +6,8 @@ const {
     Placeholder,
     insertIntoPlaceholder,
     make_reduction_step,
-    deep_copy
+    deep_copy,
+    get_list_variables,
 } = require('./lambda.js');
 
 
@@ -119,6 +120,24 @@ function test_equals() {
     console.log(x.equals(y));
     y.left = new Placeholder();
     console.log(x.equals(y));
+
+    console.log('');
+}
+
+function test_list() {
+    console.log('test_list:');
+
+    const ph = new Placeholder();
+
+    expr = new App(new Lam(new Lam(new Lam(ph))), new Placeholder());
+
+    console.log(ph.id);
+
+    console.log(get_list_variables(expr, ph, []));
+
+    console.log(expr.toString());
+
+    console.log('');
 }
 
 test_1();
@@ -129,3 +148,4 @@ test_5();
 test_insertIntoPlaceholder();
 test_deepcopy();
 test_equals();
+test_list();
