@@ -220,15 +220,16 @@ document.addEventListener('DOMContentLoaded', () => {
         mainView = renderSwamp(state);
       }
 
-      if (state.mode == CHAPTERS) {
-        mainView = renderChapters(state);
-      }
-
       return h('div', {}, [
-        h('div', { id: 'toolbar' }, [
-          // Add button here
-
-        ]),
+        h(
+          'div',
+          { id: 'toolbar' },
+          [].concat(
+            state.mode == MENU ? [] : [
+              h('div', {class: 'container-menu', id: 'button-menu', onClick: modeSetter(MENU)})
+            ]
+          )
+         ),
         mainView
       ]);
 

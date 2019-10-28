@@ -20,6 +20,21 @@ body
     transform: translateY(4px);
 }
 
+.container-menu {
+    margin: 4% auto;
+    position: relative;
+    top: -38px;
+    right: -538px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 190px;
+    height: 75px;
+}
+
+.container-menu:active {
+    transform: translateY(4px);
+}
+
 @keyframes moving {
     0% {
         transform: rotate(-40deg)  /*translateX(30px)*/;
@@ -94,22 +109,6 @@ body
     height: 70px;*/
 }
 
-#button-main {
-    background-image: url("../img/button_play.svg");
-}
-
-#button-chapters {
-    background-image: url("../img/button_chapters.svg");
-}
-
-#button-score {
-    background-image: url("../img/button_score.svg");
-}
-
-#button-settings {
-    background-image: url("../img/button_settings.svg");
-}
-
 .insert-crocodile, .insert-egg, .insert-placeholders {
     display: none;
 }
@@ -142,4 +141,24 @@ body
 .insert-egg-img {
     width: 60px;
     cursor: pointer;
+}
+
+#button-main {
+    background-image: url("../img/button_play.svg");
+}
+
+#button-chapters {
+    background-image: url("../img/button_chapters.svg");
+}
+
+#button-score {
+    background-image: url("../img/button_score.svg");
+}
+
+#button-settings {
+    background-image: url("../img/button_settings.svg");
+}
+
+#button-menu {
+    background-image: url("../img/menu2_button.svg");
 }
