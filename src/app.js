@@ -124,13 +124,30 @@ const renderTerm = (binders, term) => {
   }
 
   if (term instanceof App) {
-    // Check if a redex. 'row' = yes
-    return h(
-      'div',
-      { class: term.left instanceof Lam ? 'row' : 'col' },
-      [ renderTerm(binders, term.left),
-        renderTerm(binders, term.right)
-      ]);
+    if (term.left instanceof Lam) {
+      return h(
+        'div',
+        { class: 'row' },
+        [ renderTerm(binders, term.left),
+          renderTerm(binders, term.right)
+        ]);
+    } else {
+      return h(
+        'div',
+        { class: 'row' }, [
+          h(
+            'div',
+            { class: 'left' },
+            renderTerm(binders, term.left)
+          ),
+          h(
+            'div',
+            { class: 'right' },
+            renderTerm(binders, term.right)
+          )
+        ]
+      );
+    }
   }
 
   if (term instanceof Lam) {
