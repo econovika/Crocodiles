@@ -100,9 +100,11 @@ body {
 
 .crocodile {
     display: table;
+    margin: 0 auto;
 }
 
 .placeholder {
+    margin: 0 auto;
     height: 120px;
     width: 120px;
     background-color: rgba(0,0,0,0.1);
@@ -111,6 +113,7 @@ body {
 }
 
 .egg {
+    margin: 0 auto;
     width: 130px;
     height: 130px;
 }
