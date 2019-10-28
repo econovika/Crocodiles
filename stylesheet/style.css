@@ -91,3 +91,7 @@ body
 #button-settings {
     background-image: url("../img/button_settings.svg");
 }
+
+#button-menu {
+    background-image: url("../img/menu_button.svg");
+}

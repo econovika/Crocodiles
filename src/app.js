@@ -147,11 +147,11 @@ document.addEventListener('DOMContentLoaded', () => {
       if (state.mode == MAIN) {
         mainView = renderSwamp(state);
       }
-
       return h('div', {}, [
-        h('div', { id: 'toolbar' }, [
-          // Add button here
-        ]),
+        h('div', { id: 'toolbar' }, [].concat(
+        state.mode == MENU ? [] : [h('div', {class: 'container-select', id: 'button-menu', onClick: modeSetter(MENU)})]
+        )
+      ),
         mainView
       ]);
     },
