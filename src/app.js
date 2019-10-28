@@ -93,7 +93,11 @@ const renderCrocodile = name =>
       h('div', { class: 'croco-container' }, [
         h('img', { class: 'croco', src: 'img/crocodiles/blue_body.svg' }),
         h('img', { class: 'jaw', src: 'img/crocodiles/blue_jaws.svg' }),
-        h('div', { class: 'delete', onClick: deleteCrocodile(name) }, 'del')
+        h(
+          'div',
+          { class: 'delete', onClick: deleteCrocodile(name) },
+          ''
+        )
       ]);
 
 const changeEggColor = state => {
@@ -203,7 +207,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (state.mode == MENU) {
         mainView = h(
-          'div', {},
+          'div', { id: 'menu-buttons' },
           [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
             mode => h(
               'div',
