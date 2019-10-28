@@ -195,35 +195,69 @@ function make_reduction_step(expr) {
   }
 
   throw new Error();
-};
+}
 
-function get_list_variables(expr, placeholder_in_expr, list) {
+function get_all_colors(expr) {
     if (expr instanceof Var) {
-        return null;
+        return [expr.color]; //new Set([1,2,3,1]);
     }
 
     if (expr instanceof Lam) {
-        list.push(expr.id);
-        return get_list_variables(expr.expr, placeholder_in_expr, list)
+        return [expr.color].concat(get_all_colors(expr.expr))
     }
 
     if (expr instanceof App) {
-        res = get_list_variables(expr.left, placeholder_in_expr, list);
-        if (res !== null)
-            return res;
-        
-        res = get_list_variables(expr.right, placeholder_in_expr, list);
-        if (res !== null)
-            return res;
-
-        return null;
+        return get_all_colors(expr.left).concat(get_all_colors(expr.right));
     }
 
     if (expr instanceof Placeholder) {
-        if (expr.id == placeholder_in_expr.id) {
-            return list;
+        return [];
+    }
+}
+
+function get_colors_for_placeholder(expr, placeholder_in_expr) {
+    list = []
+    found_placeholder = false
+
+    function colors(expr, placeholder_in_expr) {
+        if (expr instanceof Var) {
+            return;
+        }
+
+        if (expr instanceof Lam) {
+            colors(expr.expr, placeholder_in_expr, list);
+
+            if (found_placeholder) {
+                list.push(expr.color)
+            }
+
+            return;
+        }
+
+        if (expr instanceof App) {
+            colors(expr.left, placeholder_in_expr, list);
+
+            if (found_placeholder)
+                return;
+
+            colors(expr.right, placeholder_in_expr, list);
+
+            return;
+        }
+
+        if (expr instanceof Placeholder) {
+            if (expr.id == placeholder_in_expr.id) {
+                // placeholder is here!
+                found_placeholder = true;
+            }
+
+            return;
         }
     }
+
+    colors(expr, placeholder_in_expr);
+
+    return list;
 }
 
 module.exports = {
@@ -235,6 +269,7 @@ module.exports = {
     insertIntoPlaceholder,
     make_reduction_step,
     deep_copy,
-    get_list_variables,
+    get_colors_for_placeholder,
     make_substitution,
+    get_all_colors,
 }

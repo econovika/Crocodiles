@@ -7,9 +7,15 @@ const {
     insertIntoPlaceholder,
     make_reduction_step,
     deep_copy,
-    get_list_variables,
+    get_colors_for_placeholder,
     make_substitution,
+    get_all_colors,
 } = require('./lambda.js');
+
+const {
+    get_free_color,
+} = require('./colors.js');
+
 
 
 function test_1() {
@@ -135,28 +141,51 @@ function test_equals() {
     console.log('');
 }
 
-function test_list() {
+function test_colors() {
     console.log('test_list:');
 
     const ph = new Placeholder();
 
-    expr = new App(new Lam(new Lam(new Lam(ph))), new Placeholder());
+    expr =
+        new App(
+            new Lam(
+                new Var('_'),
+                'NO'
+            ),
+            new Lam(
+                new App(
+                    new Lam(
+                        new Placeholder(),
+                        'NO'
+                    ),
+                    new Lam(
+                        ph,
+                        '2222'
+                    )
+                ),
+                    '1111'
+            )
+        );
 
     console.log(ph.id);
 
-    console.log(get_list_variables(expr, ph, []));
+    console.log(get_colors_for_placeholder(expr, ph, []));
 
     console.log(expr.toString());
+
+    console.log( new Set(get_all_colors(expr)));
 
     console.log('');
 }
 
-test_1();
-test_2();
-test_3();
-test_4();
-test_5();
-test_insertIntoPlaceholder();
-test_deepcopy();
-test_equals();
-test_list();
+// test_1();
+// test_2();
+// test_3();
+// test_4();
+// test_5();
+// test_insertIntoPlaceholder();
+// test_deepcopy();
+// test_equals();
+test_colors();
+
+
