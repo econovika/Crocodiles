@@ -20,6 +20,21 @@ body
     transform: translateY(4px);
 }
 
+.container-menu {
+    margin: 4% auto;
+    position: relative;
+    top: -38px;
+    right: -538px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 190px;
+    height: 75px;
+}
+
+.container-menu:active {
+    transform: translateY(4px);
+}
+
 @keyframes moving {
     0% {
         transform: rotate(-40deg)  /*translateX(30px)*/;
@@ -93,5 +108,5 @@ body
 }
 
 #button-menu {
-    background-image: url("../img/menu_button.svg");
+    background-image: url("../img/menu2_button.svg");
 }
