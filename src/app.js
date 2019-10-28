@@ -20,6 +20,17 @@ const chapters = require('./chapters');
 
 const modeSetter = mode => state => L.set('mode', mode, state);
 
+const deep_copy_state = state => {
+  return {
+    mode: state.mode,
+    chapter: state.chapter,
+    chapters: state.chapters,
+    swamp: deep_copy(state.swamp),
+    goal: deep_copy(state.goal),
+    input: deep_copy(state.input),
+  }
+}
+
 const deleteCrocodile = name => state => {
   const state_ = deep_copy_state(state);
   return state_;
@@ -161,21 +172,10 @@ const renderTerm = (binders, term) => {
     return renderPlaceholder(term);
   }
 
-  throw new Error("Not a term");
+  throw new Error('Not a term');
 };
 
 const renderSwamp = state => h('div', { id: 'swamp' }, renderTerm([], state.swamp));
-
-const deep_copy_state = state => {
-  return {
-    mode: state.mode,
-    chapter: state.chapter,
-    chapters: state.chapters,
-    swamp: deep_copy(state.swamp),
-    goal: deep_copy(state.goal),
-    input: state.input
-  }
-}
 
 const selectChapter = ix => state => {
   state.chapter = ix;
@@ -245,6 +245,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ]);
 
     },
-    node: document.getElementById("app")
+    node: document.getElementById('app')
   });
 });
