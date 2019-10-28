@@ -5,12 +5,12 @@ const {
   Lam,
   Placeholder,
   insertIntoPlaceholder,
-  dfs,
+  deep_copy,
 } = require('./lambda.js');
 
 const { h, app } = require('hyperapp');
 const L = require('partial.lenses');
-const deepcopy = require('deepcopy');
+// const deepcopy = require('deepcopy'); // do not use it!
 const MENU = 'menu';
 const MAIN = 'main';
 const CHAPTERS = 'chapters';
@@ -20,8 +20,19 @@ const chapters = require('./chapters');
 
 const modeSetter = mode => state => L.set('mode', mode, state);
 
+const deep_copy_state = state => {
+  return {
+    mode: state.mode,
+    chapter: state.chapter,
+    chapters: state.chapters,
+    swamp: deep_copy(state.swamp),
+    goal: deep_copy(state.goal),
+    input: deep_copy(state.input),
+  }
+}
+
 const deleteCrocodile = name => state => {
-  const state_ = deepcopy(state);
+  const state_ = deep_copy_state(state);
   return state_;
 };
 
@@ -165,7 +176,7 @@ const renderTerm = (binders, term) => {
     return renderPlaceholder(term);
   }
 
-  throw new Error("Not a term");
+  throw new Error('Not a term');
 };
 
 const renderSwamp = state => h('div', { id: 'swamp' }, renderTerm([], state.swamp));
@@ -238,6 +249,6 @@ document.addEventListener('DOMContentLoaded', () => {
       ]);
 
     },
-    node: document.getElementById("app")
+    node: document.getElementById('app')
   });
 });

@@ -2,16 +2,25 @@ const mkId = require('./id');
 
 class Expr {
     constructor() {
+        this.id = mkId();
     }
 }
 
 class Var extends Expr {
-    constructor(name) {
+    constructor(ix) {
         super();
-        this.ix = 0;
+        this.ix = ix;
     }
+
     toString () {
         return this.ix;
+    }
+
+    equals (expr) {
+        if (!(expr instanceof Var))
+            return false;
+
+        return this.ix == expr.ix;
     }
 }
 
@@ -23,7 +32,13 @@ class App extends Expr {
     }
 
     toString() {
-        return '(' + this.left.toString() + ' ' + this.right.toString() + ')';
+        return '(' + this.left.toString() + ') (' + this.right.toString() + ')';
+    }
+
+    equals (expr) {
+        if (!(expr instanceof App))
+            return false;
+        return this.left.equals(expr.left) && this.right.equals(expr.right);
     }
 }
 
@@ -32,18 +47,49 @@ class Lam extends Expr {
         super();
         this.expr = expr;
     }
+
     toString() {
         return '\\.' + this.expr.toString();
+    }
+
+    equals (expr) {
+        if (!(expr instanceof Lam))
+            return false;
+        return this.expr.equals(expr.expr);
     }
 }
 
 class Placeholder extends Expr {
     constructor() {
         super();
-        this.id = mkId();
     }
+
     toString() {
         return '(placeholder ' + this.id + ')';
+    }
+
+    equals (expr) {
+        if (!(expr instanceof Placeholder))
+            return false;
+        return true;
+    }
+}
+ 
+function deep_copy(expr) {
+    if (expr instanceof Var) {
+        return new Var(expr.ix);
+    }
+
+    if (expr instanceof Lam) {
+        return new Lam(deep_copy(expr.expr));
+    }
+
+    if (expr instanceof App) {
+        return new App(deep_copy(expr.left), deep_copy(expr.right));
+    }
+
+    if (expr instanceof Placeholder) {
+        return new Placeholder(expr.id);
     }
 }
 
@@ -85,7 +131,7 @@ function insertIntoPlaceholder (placeholderId, expr, newExpr) {
 function substitution(expr, expr_into, var_name) {
     if (expr instanceof Var) {
 
-        if (expr.name == var_name) {
+        if (expr.ix == var_name) {
             return expr_into;
         }
 
@@ -93,7 +139,7 @@ function substitution(expr, expr_into, var_name) {
     }
 
     if (expr instanceof App) {
-        return new App(substitution(expr.expr_left, expr_into, var_name), substitution(expr.expr_right, expr_into, var_name));
+        return new App(substitution(expr.left, expr_into, var_name), substitution(expr.right, expr_into, var_name));
     }
 
     if (expr instanceof Lam) {
@@ -111,32 +157,12 @@ function make_reduction_step(expr) {
     }
 
     if (expr instanceof App) {
-        if (expr.expr_left instanceof App) {
-            return make_reduction_step(expr.expr_left);
+        if (expr.left instanceof App) {
+            return make_reduction_step(expr.left);
         }
-        if (expr.expr_left instanceof Lam) {
-            return substitution(expr.expr_left.expr, expr.expr_right, expr.expr_left.name);
+        if (expr.left instanceof Lam) {
+            return substitution(expr.left.expr, expr.right, expr.left.ix);
         }
-    }
-}
-
-function dfs(expr) {
-    // console.log(expr instanceof App ? "1" : "0")
-
-    if (expr instanceof Var) {
-        return expr.name;
-    }
-
-    if (expr instanceof App) {
-        return "(" + dfs(expr.expr_left) + ")(" + dfs(expr.expr_right) + ")";
-    }
-
-    if (expr instanceof Lam) {
-        return "\\_." + dfs(expr.expr);
-    }
-
-    if (expr instanceof Placeholder) {
-        return "(placeholder " + expr.id + ')';
     }
 }
 
@@ -147,6 +173,6 @@ module.exports = {
     Lam,
     Placeholder,
     insertIntoPlaceholder,
-    dfs,
     make_reduction_step,
+    deep_copy,
 }
