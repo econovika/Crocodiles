@@ -126,9 +126,10 @@
        id="linearGradient1351"
        x1="155.38226"
        y1="112.71227"
-       x2="153.45831"
-       y2="-6.7282062"
-       gradientUnits="userSpaceOnUse" />
+       x2="152.92377"
+       y2="30.487738"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(1,0,0,1.5512227,0,-43.459653)" />
     <linearGradient
        inkscape:collect="always"
        xlink:href="#linearGradient1377"
@@ -180,18 +181,18 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.49497475"
-     inkscape:cx="385.35225"
-     inkscape:cy="616.04316"
+     inkscape:zoom="0.7"
+     inkscape:cx="468.75618"
+     inkscape:cy="717.55028"
      inkscape:document-units="mm"
      inkscape:current-layer="layer3"
      showgrid="false"
      showguides="false"
-     inkscape:window-width="720"
-     inkscape:window-height="378"
-     inkscape:window-x="305"
-     inkscape:window-y="277"
-     inkscape:window-maximized="0" />
+     inkscape:window-width="1855"
+     inkscape:window-height="1056"
+     inkscape:window-x="65"
+     inkscape:window-y="24"
+     inkscape:window-maximized="1" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -200,7 +201,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -305,12 +306,12 @@
        style="opacity:1;fill:#ffffff;fill-opacity:0.22988506;stroke-width:0.286654;filter:url(#filter1301)"
        id="path971" />
     <rect
-       style="opacity:0.335;fill:url(#linearGradient1351);fill-opacity:1;stroke-width:0.26458332"
+       style="opacity:0.33500001;fill:url(#linearGradient1351);fill-opacity:1;stroke-width:0.32953349"
        id="rect1343"
        width="311.04031"
-       height="52.456432"
+       height="81.371613"
        x="-6.0135646"
-       y="26.385839" />
+       y="-2.5293388" />
     <rect
        y="-147.25597"
        x="-6.0135646"
