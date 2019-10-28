@@ -49,6 +49,24 @@ class Placeholder extends Expr {
     }
 }
 
+function deep_copy(expr) {
+    if (expr instanceof Var) {
+        return new Var(expr.ix);
+    }
+
+    if (expr instanceof Lam) {
+        return new Lam(deep_copy(expr.expr));
+    }
+
+    if (expr instanceof App) {
+        return new App(deep_copy(expr.left), deep_copy(expr.right));
+    }
+
+    if (expr instanceof Placeholder) {
+        return new Placeholder(expr.id);
+    }
+}
+
 function insertIntoPlaceholder (placeholderId, expr, newExpr) {
     if (expr instanceof Var) {
         return expr;
@@ -122,26 +140,6 @@ function make_reduction_step(expr) {
     }
 }
 
-function dfs(expr) {
-    // console.log(expr instanceof App ? "1" : "0")
-
-    if (expr instanceof Var) {
-        return expr.ix;
-    }
-
-    if (expr instanceof App) {
-        return "(" + dfs(expr.left) + ") (" + dfs(expr.right) + ")";
-    }
-
-    if (expr instanceof Lam) {
-        return "\\_." + dfs(expr.expr);
-    }
-
-    if (expr instanceof Placeholder) {
-        return "(placeholder " + expr.id + ')';
-    }
-}
-
 module.exports = {
     Expr,
     Var,
@@ -149,6 +147,6 @@ module.exports = {
     Lam,
     Placeholder,
     insertIntoPlaceholder,
-    dfs,
     make_reduction_step,
+    deep_copy
 }
