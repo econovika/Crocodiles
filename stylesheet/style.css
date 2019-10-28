@@ -73,7 +73,8 @@ body {
 }
 
 .row {
-    display: flex;
+    display: inline-block;
+    margin: 0 auto;
 }
 
 .left {
