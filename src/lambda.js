@@ -6,9 +6,9 @@ class Expr {
 }
 
 class Var extends Expr {
-    constructor(name) {
+    constructor(ix) {
         super();
-        this.ix = 0;
+        this.ix = ix;
     }
     toString () {
         return this.ix;
@@ -23,7 +23,7 @@ class App extends Expr {
     }
 
     toString() {
-        return '(' + this.left.toString() + ' ' + this.right.toString() + ')';
+        return '(' + this.left.toString() + ') (' + this.right.toString() + ')';
     }
 }
 
@@ -32,6 +32,7 @@ class Lam extends Expr {
         super();
         this.expr = expr;
     }
+
     toString() {
         return '\\.' + this.expr.toString();
     }
@@ -42,6 +43,7 @@ class Placeholder extends Expr {
         super();
         this.id = mkId();
     }
+
     toString() {
         return '(placeholder ' + this.id + ')';
     }
@@ -85,7 +87,7 @@ function insertIntoPlaceholder (placeholderId, expr, newExpr) {
 function substitution(expr, expr_into, var_name) {
     if (expr instanceof Var) {
 
-        if (expr.name == var_name) {
+        if (expr.ix == var_name) {
             return expr_into;
         }
 
@@ -93,7 +95,7 @@ function substitution(expr, expr_into, var_name) {
     }
 
     if (expr instanceof App) {
-        return new App(substitution(expr.expr_left, expr_into, var_name), substitution(expr.expr_right, expr_into, var_name));
+        return new App(substitution(expr.left, expr_into, var_name), substitution(expr.right, expr_into, var_name));
     }
 
     if (expr instanceof Lam) {
@@ -111,11 +113,11 @@ function make_reduction_step(expr) {
     }
 
     if (expr instanceof App) {
-        if (expr.expr_left instanceof App) {
-            return make_reduction_step(expr.expr_left);
+        if (expr.left instanceof App) {
+            return make_reduction_step(expr.left);
         }
-        if (expr.expr_left instanceof Lam) {
-            return substitution(expr.expr_left.expr, expr.expr_right, expr.expr_left.name);
+        if (expr.left instanceof Lam) {
+            return substitution(expr.left.expr, expr.right, expr.left.ix);
         }
     }
 }
@@ -124,11 +126,11 @@ function dfs(expr) {
     // console.log(expr instanceof App ? "1" : "0")
 
     if (expr instanceof Var) {
-        return expr.name;
+        return expr.ix;
     }
 
     if (expr instanceof App) {
-        return "(" + dfs(expr.expr_left) + ")(" + dfs(expr.expr_right) + ")";
+        return "(" + dfs(expr.left) + ") (" + dfs(expr.right) + ")";
     }
 
     if (expr instanceof Lam) {
