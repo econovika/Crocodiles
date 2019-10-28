@@ -75,7 +75,7 @@ class Placeholder extends Expr {
         return true;
     }
 }
- 
+
 function deep_copy(expr) {
     if (expr instanceof Var) {
         return new Var(expr.ix, expr.color);
@@ -140,7 +140,10 @@ function substitution(expr, expr_into, var_name) {
     }
 
     if (expr instanceof App) {
-        return new App(substitution(expr.left, expr_into, var_name), substitution(expr.right, expr_into, var_name));
+      return new App(
+        substitution(expr.left, expr_into, var_name),
+        substitution(expr.right, expr_into, var_name)
+      );
     }
 
     if (expr instanceof Lam) {
@@ -149,23 +152,42 @@ function substitution(expr, expr_into, var_name) {
 }
 
 function make_reduction_step(expr) {
-    if (expr instanceof Var) {
-        return expr;
-    }
+  if (expr instanceof Var) {
+    return null;
+  }
 
-    if (expr instanceof Lam) {
-        return make_reduction_step(expr);
+  if (expr instanceof Lam) {
+    const t = make_reduction_step(expr.expr);
+    if (t === null) {
+      return null;
+    } else {
+      return new Lam(t);
     }
+  }
 
-    if (expr instanceof App) {
-        if (expr.left instanceof App) {
-            return make_reduction_step(expr.left);
+  if (expr instanceof App) {
+    if (expr.left instanceof Lam) {
+      return substitution(
+        expr.left,
+        expr.right,
+        expr.left.ix
+      );
+
+    } else {
+      const t_l = make_reduction_step(expr.left);
+      if (t_l === null) {
+        const t_r = make_reduction_step(expr.right);
+        if (t_r === null) {
+          return null;
+        } else {
+          return new App(expr.left, t_r);
         }
-        if (expr.left instanceof Lam) {
-            return substitution(expr.left.expr, expr.right, expr.left.ix);
-        }
+      } else {
+        return new App(t_l, expr.right);
+      }
     }
-}
+  }
+};
 
 function get_list_variables(expr, placeholder_in_expr, list) {
     if (expr instanceof Var) {
@@ -206,4 +228,5 @@ module.exports = {
     make_reduction_step,
     deep_copy,
     get_list_variables,
+    substitution
 }
