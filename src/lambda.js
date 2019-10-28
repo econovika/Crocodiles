@@ -10,8 +10,16 @@ class Var extends Expr {
         super();
         this.ix = ix;
     }
+
     toString () {
         return this.ix;
+    }
+
+    equals (expr) {
+        if (!(expr instanceof Var))
+            return false;
+
+        return this.ix == expr.ix;
     }
 }
 
@@ -25,6 +33,12 @@ class App extends Expr {
     toString() {
         return '(' + this.left.toString() + ') (' + this.right.toString() + ')';
     }
+
+    equals (expr) {
+        if (!(expr instanceof App))
+            return false;
+        return this.left.equals(expr.left) && this.right.equals(expr.right);
+    }
 }
 
 class Lam extends Expr {
@@ -35,6 +49,12 @@ class Lam extends Expr {
 
     toString() {
         return '\\.' + this.expr.toString();
+    }
+
+    equals (expr) {
+        if (!(expr instanceof Lam))
+            return false;
+        return this.expr.equals(expr.expr);
     }
 }
 
@@ -47,8 +67,14 @@ class Placeholder extends Expr {
     toString() {
         return '(placeholder ' + this.id + ')';
     }
-}
 
+    equals (expr) {
+        if (!(expr instanceof Placeholder))
+            return false;
+        return this.id ==  expr.id;
+    }
+}
+ 
 function deep_copy(expr) {
     if (expr instanceof Var) {
         return new Var(expr.ix);

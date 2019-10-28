@@ -93,15 +93,32 @@ function test_insertIntoPlaceholder () {
 }
 
 function test_deepcopy() {
+    console.log('test_deepcopy:');
+
     x = new App(new Lam(new Lam(new Var(0))), new Var("2"));
 
     y = deep_copy(x);
 
     x.right.ix = 123;
 
-    x.toString();
-    y.toString();
+    console.log(x.toString());
+    console.log(y.toString());
 
+
+    console.log('');
+}
+
+function test_equals() {
+    console.log('test_equals:');
+
+    x = new App(new Lam(new Lam(new Var(0))), new Var("2"));
+
+    y = deep_copy(x);
+
+    console.log(x.equals(x));
+    console.log(x.equals(y));
+    y.left = new Placeholder();
+    console.log(x.equals(y));
 }
 
 test_1();
@@ -111,3 +128,4 @@ test_4();
 test_5();
 test_insertIntoPlaceholder();
 test_deepcopy();
+test_equals();
