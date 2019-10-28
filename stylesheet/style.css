@@ -7,16 +7,19 @@ body
     background-color: white;
     text-align: center;
 }
+
 .container-select {
     margin: 4% auto;
     background-repeat: no-repeat;
     background-size: contain;
     width: 380px;
     height: 150px;
-}     
+}
+
 .container-select:active {
     transform: translateY(4px);
 }
+
 @keyframes moving {
     0% {
         transform: rotate(-40deg)  /*translateX(30px)*/;
@@ -31,6 +34,7 @@ body
         transform-origin: 20px 20px;
     }
 }
+
 .jaw {
     animation-name: moving;
     animation-duration: 0.92s;
@@ -38,4 +42,52 @@ body
     position: relative;
     left: -155px;
     top: -30px;
+}
+
+.col {
+    display: flex;
+}
+
+#swamp {
+    width: 50%;
+    margin: 0 auto;
+    background-color: green;
+}
+
+.croco-container {
+    white-space: nowrap;
+}
+
+.placeholder {
+    height: 70px;
+    width: 70px;
+    background-color: rgba(0,0,0,0.1);
+    border-style: dashed;
+    border-color: #999;
+}
+
+.egg {
+    width: 100px;
+    height: 70px;
+}
+
+.croco {
+    width: 100px;
+    height: 70px;
+}
+
+#button-main {
+    background-image: url("../img/button_play.svg");
+}
+
+#button-chapters {
+    background-image: url("../img/button_chapters.svg");
+}
+
+#button-score {
+    background-image: url("../img/button_score.svg");
+}
+
+#button-settings {
+    background-image: url("../img/button_settings.svg");
 }
