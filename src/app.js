@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
       return h('div', {}, [
         h('div', { id: 'toolbar' }, [].concat(
-        state.mode == MENU ? [] : [h('div', {class: 'container-select', id: 'button-menu', onClick: modeSetter(MENU)})]
+        state.mode == MENU ? [] : [h('div', {class: 'container-menu', id: 'button-menu', onClick: modeSetter(MENU)})]
         )
       ),
         mainView
