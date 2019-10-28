@@ -60,19 +60,31 @@ const renderPlaceholder = placeholder =>
         [ h('span', { class: 'insert-crocodile',
                       onClick: insertCrocodile(placeholder)
                     },
-            '+cro'
+            h('span', { class: 'insert-crocodile' }, [
+              h('img', {
+                src: 'img/crocodiles/green_body.svg',
+                class: 'insert-crocodile-img'
+              })
+            ])
            ),
 
           h('span', { class: 'insert-egg',
                       onClick: insertEgg(placeholder)
                     },
-            '+egg'
+            [
+              h('img', {
+                src: 'img/crocodiles/green_egg.svg',
+                class: 'insert-egg-img'
+              })
+            ]
            ),
 
           h('span', { class: 'insert-placeholders',
                       onClick: insertPlaceholders(placeholder)
                     },
-            '+2'
+            [ h('div', { class: 'insert-placeholders-preview' }),
+              h('div', { class: 'insert-placeholders-preview' })
+            ]
            )
 
         ]
@@ -85,19 +97,41 @@ const renderCrocodile = name =>
         h('div', { class: 'delete', onClick: deleteCrocodile(name) }, 'del')
       ]);
 
+const changeEggColor = state => {
+  return state;
+};
+
+const changeCrocodileColor = state => {
+  return state;
+};
+
+const copyState = state => {
+  const newState = Object.assign({}, state);
+  // TODO: replace
+  // newState.swamp = deepcopy(state.swamp);
+  return newState;
+};
+
 const renderTerm = (binders, term) => {
+
   if (term instanceof Var) {
-    return h('img', { class: 'egg',
-                      onClick: changeEggColor,
-                      src: 'img/crocodiles/blue_egg.svg' });
+    return h(
+      'div',
+      { class: 'egg' }, [
+        h('img', { class: 'egg',
+                   onClick: changeEggColor,
+                   src: 'img/crocodiles/blue_egg.svg' }),
+      ]);
   }
 
   if (term instanceof App) {
     // Check if a redex. 'row' = yes
-    return h('div', { class: term.left instanceof Lam ? 'row' : 'col' },
-             [ renderTerm(binders, term.left),
-               renderTerm(binders, term.right)
-             ]);
+    return h(
+      'div',
+      { class: term.left instanceof Lam ? 'row' : 'col' },
+      [ renderTerm(binders, term.left),
+        renderTerm(binders, term.right)
+      ]);
   }
 
   if (term instanceof Lam) {
