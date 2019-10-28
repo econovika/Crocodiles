@@ -8,7 +8,7 @@ const {
     make_reduction_step,
     deep_copy,
     get_list_variables,
-    substitution,
+    make_substitution,
 } = require('./lambda.js');
 
 
@@ -77,8 +77,7 @@ function test_4() {
   const a = new Var(0);
   const b = new Lam(new Var(0));
   console.log('a:', a, 'b:', b);
-  console.log('a [0:=b]', substitution(a, b, 0));
-
+  console.log('a [0:=b]', make_substitution(a, b, 0));
 }
 
 function test_5() {

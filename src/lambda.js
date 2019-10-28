@@ -129,25 +129,32 @@ function insertIntoPlaceholder (placeholderId, expr, newExpr) {
     throw new Error("Incorrect term");
 }
 
-function substitution(expr, expr_into, ix) {
-    if (expr instanceof Var) {
-        if (expr.ix == ix) {
-            // make substitution here!
-            return deep_copy(expr_into);
+function make_substitution(expr, expr_into, ix) {
+    was_subs = false;
+
+    function substitution(expr, expr_into, ix) {
+        if (expr instanceof Var) {
+            if (expr.ix == ix) {
+                // make substitution here!
+                was_subs = true;
+                return deep_copy(expr_into);
+            }
+            return expr;
         }
-        return expr;
+
+        if (expr instanceof App) {
+        return new App(
+            substitution(expr.left, expr_into, ix),
+            substitution(expr.right, expr_into, ix)
+        );
+        }
+
+        if (expr instanceof Lam) {
+            return new Lam(substitution(expr.expr, expr_into, ix + 1));
+        }
     }
 
-    if (expr instanceof App) {
-      return new App(
-        substitution(expr.left, expr_into, ix),
-        substitution(expr.right, expr_into, ix)
-      );
-    }
-
-    if (expr instanceof Lam) {
-        return new Lam(substitution(expr.expr, expr_into, ix + 1));
-    }
+    return was_subs;
 }
 
 function make_reduction_step(expr) {
@@ -166,7 +173,7 @@ function make_reduction_step(expr) {
 
   if (expr instanceof App) {
     if (expr.left instanceof Lam) {
-      return substitution(
+      return make_substitution(
         expr.left,
         expr.right,
         expr.left.ix
@@ -229,5 +236,5 @@ module.exports = {
     make_reduction_step,
     deep_copy,
     get_list_variables,
-    substitution,
+    make_substitution,
 }
