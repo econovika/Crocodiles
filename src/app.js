@@ -87,7 +87,9 @@ const renderCrocodile = name =>
 
 const renderTerm = (binders, term) => {
   if (term instanceof Var) {
-    return h('img', { class: 'egg', src: 'img/crocodiles/blue_egg.svg' }, '(egg)');
+    return h('img', { class: 'egg',
+                      onClick: changeEggColor,
+                      src: 'img/crocodiles/blue_egg.svg' });
   }
 
   if (term instanceof App) {
@@ -114,11 +116,31 @@ const renderTerm = (binders, term) => {
 
 const renderSwamp = state => h('div', { id: 'swamp' }, renderTerm([], state.swamp));
 
+const selectChapter = ix => state => {
+  state.chapter = ix;
+  console.log(state);
+  state.goal = state.chapters[ix].goal;
+  state.input = state.chapters[ix].input;
+  state.swamp = new Placeholder();
+  state.mode = MAIN;
+  return Object.assign({}, state);
+};
+
+const renderChapters = state => h(
+  'div', { class: 'chapters' },
+  state.chapters.map(
+    ({ title, goal, input }, ix) =>
+      h('div', { class: 'chapter-select',
+                 onClick: selectChapter(ix)}, title)
+  )
+);
+
 document.addEventListener('DOMContentLoaded', () => {
   app({
     // Startup state
     init: { mode: MENU,
             chapter: 0,
+            chapters: chapters,
             swamp: new Lam(new App(new Placeholder(), new Var(2)))
             // new Lam(new App (new Var(0),
             //                         new App (new Var(1),
@@ -148,12 +170,18 @@ document.addEventListener('DOMContentLoaded', () => {
         mainView = renderSwamp(state);
       }
 
+      if (state.mode == CHAPTERS) {
+        mainView = renderChapters(state);
+      }
+
       return h('div', {}, [
         h('div', { id: 'toolbar' }, [
           // Add button here
+
         ]),
         mainView
       ]);
+
     },
     node: document.getElementById("app")
   });

@@ -40,7 +40,7 @@ body
     animation-duration: 0.92s;
     animation-iteration-count: infinite;
     position: relative;
-    left: -155px;
+    left: -150px;
     top: -30px;
 }
 
@@ -60,20 +60,20 @@ body
 
 .placeholder {
     height: 70px;
-    width: 70px;
+    width: 120px;
     background-color: rgba(0,0,0,0.1);
     border-style: dashed;
     border-color: #999;
 }
 
 .egg {
-    width: 100px;
-    height: 70px;
+    width: 130px;
+    height: 130px;
 }
 
 .croco {
-    width: 100px;
-    height: 70px;
+    /* width: 100px;
+    height: 70px;*/
 }
 
 #button-main {
