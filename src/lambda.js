@@ -1,23 +1,29 @@
+const mkId = require('./id');
 
 class Expr {
     constructor() {
-
     }
 }
 
 class Var extends Expr {
     constructor(name) {
         super();
-        this.name = name; // number
+        this.ix = 0;
+    }
+    toString () {
+        return this.ix;
     }
 }
 
 class App extends Expr {
-    //Expr expr1, expr2;
-    constructor(expr_left, expr_right) {
+    constructor(left, right) {
         super();
-        this.expr_left = expr_left;
-        this.expr_right = expr_right;
+        this.left = left;
+        this.right = right;
+    }
+
+    toString() {
+        return '(' + this.left.toString() + ' ' + this.right.toString() + ')';
     }
 }
 
@@ -26,19 +32,55 @@ class Lam extends Expr {
         super();
         this.expr = expr;
     }
+    toString() {
+        return '\\.' + this.expr.toString();
+    }
 }
 
 class Placeholder extends Expr {
     constructor() {
         super();
+        this.id = mkId();
+    }
+    toString() {
+        return '(placeholder ' + this.id + ')';
     }
 }
 
-//data Expr = Var Symb
-// | Expr :@ Expr
-// | Lam Symb Expr
+function insertIntoPlaceholder (placeholderId, expr, newExpr) {
+    if (expr instanceof Var) {
+        return expr;
+    }
 
-// beta-reduction
+    if (expr instanceof App) {
+        expr.left = insertIntoPlaceholder(
+            placeholderId,
+            expr.left,
+            newExpr
+        );
+        expr.right = insertIntoPlaceholder(
+            placeholderId,
+            expr.right,
+            newExpr
+        );
+        return expr;
+    }
+
+    if (expr instanceof Lam) {
+        expr.expr = insertIntoPlaceholder(
+            placeholderId, expr.expr, newExpr
+        );
+        return expr;
+    }
+
+    if (expr instanceof Placeholder) {
+        if (placeholderId == expr.id)
+            return newExpr;
+        else
+            return expr;
+    }
+    throw new Error("Incorrect term");
+}
 
 function substitution(expr, expr_into, var_name) {
     if (expr instanceof Var) {
@@ -70,11 +112,10 @@ function make_reduction_step(expr) {
 
     if (expr instanceof App) {
         if (expr.expr_left instanceof App) {
-            return reduction_step(expr.expr_left);
+            return make_reduction_step(expr.expr_left);
         }
         if (expr.expr_left instanceof Lam) {
-
-            return substitution(expr.expr_left.expr, expr.expr_right, 0); // expr.expr_left.name
+            return substitution(expr.expr_left.expr, expr.expr_right, expr.expr_left.name);
         }
     }
 }
@@ -95,10 +136,9 @@ function dfs(expr) {
     }
 
     if (expr instanceof Placeholder) {
-        return "\"Placeholder\"";
+        return "(placeholder " + expr.id + ')';
     }
 }
-
 
 module.exports = {
     Expr,
@@ -106,6 +146,7 @@ module.exports = {
     App,
     Lam,
     Placeholder,
+    insertIntoPlaceholder,
     dfs,
     make_reduction_step,
 }

@@ -4,10 +4,10 @@ const {
     App,
     Lam,
     Placeholder,
+    insertIntoPlaceholder,
     dfs,
     make_reduction_step
 } = require('./lambda.js');
-
 
 
 function test_1() {
@@ -51,9 +51,23 @@ function test_4() {
 }
 
 function test_5() {
+    console.log('5');
     x = new App(new Placeholder(), new Placeholder());
 
-    console.log(dfs(x));
+    console.log(x.toString());
+}
+
+function test_insertIntoPlaceholder () {
+    console.log('insertIntoPlaceholder');
+
+    const ph = new Placeholder();
+    const x = new App(new Lam(new Lam(ph)), new Placeholder());
+
+    console.log(x.toString());
+    const y = insertIntoPlaceholder(ph.id, x, new Var(3));
+
+    console.log(y.toString());
+
 }
 
 test_1();
@@ -61,3 +75,4 @@ test_2();
 test_3();
 test_4();
 test_5();
+test_insertIntoPlaceholder();
