@@ -17,6 +17,7 @@ body {
     background-size: cover;
     background-attachment: fixed;
     text-align: center;
+    position: fixed;
 }
 
 .bg_play, #alternative-bg {
@@ -105,7 +106,7 @@ body {
 .jaw {
     cursor: pointer;
     animation-name: moving;
-    animation-duration: 0.1s;
+    animation-duration: 0.92s;
     animation-iteration-count: infinite;
     position: relative;
     left: -150px;
