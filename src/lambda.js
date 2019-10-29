@@ -78,18 +78,13 @@ class Placeholder extends Expr {
 }
 
 function deep_copy(expr) {
-  console.log('deep_copy', expr);
 
   if (expr instanceof Var) {
-    const t = new Var(expr.color);
-    t.id = expr.id;
-    return t;
+    return new Var(expr.color);
   }
 
   if (expr instanceof Lam) {
-    const t = new Lam(deep_copy(expr.expr), expr.color);
-    t.id = expr.id;
-    return t;
+    return new Lam(deep_copy(expr.expr), expr.color);
   }
 
   if (expr instanceof App) {
@@ -97,9 +92,7 @@ function deep_copy(expr) {
   }
 
   if (expr instanceof Placeholder) {
-    const t = new Placeholder(expr.id);
-    t.id = expr.id;
-    return t;
+    return new Placeholder(expr.id);
   }
 
   throw new Error("deep_copy: no match");

@@ -283,6 +283,7 @@ document.addEventListener('DOMContentLoaded', () => {
           )
         );
       }
+
       else if (state.mode == MAIN) {
         mainView = renderSwamp(state);
       }
