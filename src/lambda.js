@@ -228,7 +228,9 @@ function rotateEggs(expr, colorId) {
   }
 
   if (expr instanceof Lam) {
-    rotateEggs(expr.expr, colorId);
+    if (expr.color != colorId) {
+      rotateEggs(expr.expr, colorId);
+    }
   }
 
   if (expr instanceof App) {

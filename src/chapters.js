@@ -15,6 +15,18 @@ const S = new Lam(new Lam(new Lam(
 
 const K = new Lam(new Lam(new Var(4), 6), 4);
 
+const two =
+      new Lam(
+        new Lam(
+          new App(
+            new Var(4),
+            new App(
+              new Var(4),
+              new Var(2)
+            )
+          ), 2),
+        4);
+
 const plus =
       new Lam(
         new Lam(
