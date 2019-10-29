@@ -126,6 +126,7 @@ body {
 
 .row-container {
     position: relative;
+    display: inline-block;
 }
 
 #swamp {
@@ -148,7 +149,7 @@ body {
 
 .croco-container:hover > .delete,
 .egg:hover > .delete,
-.row-container:hover > .delete {
+.row-container:hover .delete {
     visibility: visible;
 }
 

@@ -247,30 +247,32 @@ const renderTerm = (binders, term) => {
       const deleter = h(
         'img',
         { class: 'delete',
-          src: 'img/delete_button.svg',
           onClick: deleteEntry(term.id),
+          src: 'img/delete_button.svg',
         },
       );
 
       return h(
-        'table',
-        { class: mkClassName('row') }, h('tr', { class: 'row-container' }, [
+        'div', { class: 'row-container' }, [
           h(
-            'td',
-            { class: 'left' },
-            renderTerm(binders, term.left)
-          ),
-          h(
-            'td',
-            { class: 'right' },
-            renderTerm(binders, term.right)
-          )
-        ].concat(
-          (term.left instanceof Placeholder &&
-           term.right instanceof Placeholder) ?
-            [ deleter ] : []
-        ))
-      );
+            'table',
+            { class: mkClassName('row') }, h('tr', {}, [
+              h(
+                'td',
+                { class: 'left' },
+                renderTerm(binders, term.left)
+              ),
+              h(
+                'td',
+                { class: 'right' },
+                renderTerm(binders, term.right)
+              )
+            ])
+          )].concat(
+            (term.left instanceof Placeholder &&
+             term.right instanceof Placeholder) ?
+              [ deleter ] : []
+          ));
     }
   }
 
