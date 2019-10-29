@@ -1,168 +1,198 @@
 const mkId = require('./id');
+const colors = require('./colors');
 
 class Expr {
-    constructor() {
-        this.id = mkId();
-    }
+  constructor() {
+    this.id = mkId();
+  }
 }
 
 class Var extends Expr {
-    constructor(ix, color) {
-        super();
-        this.ix = ix;
-    }
+  constructor(color = 0) {
+    super();
+    this.color = color;
+  }
 
-    toString () {
-        return this.ix;
-    }
+  toString () {
+    return this.ix;
+  }
 
-    equals (expr) {
-        if (!(expr instanceof Var))
-            return false;
+  equals (expr) {
+    if (!(expr instanceof Var))
+      return false;
 
-        return this.ix == expr.ix;
-    }
+    return this.ix == expr.ix;
+  }
 }
 
 class App extends Expr {
-    constructor(left, right) {
-        super();
-        this.left = left;
-        this.right = right;
-    }
+  constructor(left, right) {
+    super();
+    this.left = left;
+    this.right = right;
+  }
 
-    toString() {
-        return '(' + this.left.toString() + ') (' + this.right.toString() + ')';
-    }
+  toString() {
+    return '(' + this.left.toString() + ') (' + this.right.toString() + ')';
+  }
 
-    equals (expr) {
-        if (!(expr instanceof App))
-            return false;
-        return this.left.equals(expr.left) && this.right.equals(expr.right);
-    }
+  equals (expr) {
+    if (!(expr instanceof App))
+      return false;
+    return this.left.equals(expr.left) && this.right.equals(expr.right);
+  }
 }
 
 class Lam extends Expr {
-    constructor(expr, color) {
-        super();
-        this.expr = expr;
-        this.color = color;
-    }
+  constructor(expr, color = 0) {
+    super();
+    this.expr = expr;
+    this.color = color;
+  }
 
-    toString() {
-        return '\\.(' + this.id + ') ' + this.expr.toString();
-    }
+  toString() {
+    return '\\.(' + this.id + ') ' + this.expr.toString();
+  }
 
-    equals (expr) {
-        if (!(expr instanceof Lam))
-            return false;
-        return this.expr.equals(expr.expr);
-    }
+  equals (expr) {
+    if (!(expr instanceof Lam))
+      return false;
+    return this.expr.equals(expr.expr);
+  }
 }
 
 class Placeholder extends Expr {
-    constructor() {
-        super();
-    }
+  constructor() {
+    super();
+  }
 
-    toString() {
-        return '(placeholder ' + this.id + ')';
-    }
+  toString() {
+    return '(placeholder ' + this.id + ')';
+  }
 
-    equals (expr) {
-        if (!(expr instanceof Placeholder))
-            return false;
-        return true;
-    }
+  equals (expr) {
+    if (!(expr instanceof Placeholder))
+      return false;
+    return true;
+  }
 }
 
 function deep_copy(expr) {
-    console.log('deep_copy', expr);
 
-    if (expr instanceof Var) {
-        return new Var(expr.ix, expr.color);
+  if (expr instanceof Var) {
+    return new Var(expr.color);
+  }
+
+  if (expr instanceof Lam) {
+    return new Lam(deep_copy(expr.expr), expr.color);
+  }
+
+  if (expr instanceof App) {
+    return new App(deep_copy(expr.left), deep_copy(expr.right));
+  }
+
+  if (expr instanceof Placeholder) {
+    return new Placeholder(expr.id);
+  }
+
+  throw new Error("deep_copy: no match");
+}
+
+function changeColorAt (expr, id) {
+  if (expr instanceof Var) {
+    if (expr.id == id) {
+      expr.color = (expr.color + 1) % colors.length;
     }
+    return expr;
+  }
+  if (expr instanceof App) {
+    return new App(
+      changeColorAt(expr.left, id),
+      changeColorAt(expr.right, id)
+    );
+  }
 
-    if (expr instanceof Lam) {
-        return new Lam(deep_copy(expr.expr, expr.color));
+  if (expr instanceof Lam) {
+    if (expr.id == id) {
+      expr.color = (expr.color + 1) % colors.length;
+      return expr;
+    } else {
+      return new Lam(changeColorAt(expr.expr, id), expr.color);
     }
+  }
 
-    if (expr instanceof App) {
-        return new App(deep_copy(expr.left), deep_copy(expr.right));
-    }
-
-    if (expr instanceof Placeholder) {
-        return new Placeholder(expr.id);
-    }
-
-    throw new Error("deep_copy: no match");
+  return expr;
 }
 
 function insertIntoPlaceholder (placeholderId, expr, newExpr) {
+
+  function go(expr, depth) {
+
     if (expr instanceof Var) {
-        return expr;
+      return expr;
     }
 
     if (expr instanceof App) {
-        expr.left = insertIntoPlaceholder(
-            placeholderId,
-            expr.left,
-            newExpr
-        );
-        expr.right = insertIntoPlaceholder(
-            placeholderId,
-            expr.right,
-            newExpr
-        );
-        return expr;
+      expr.left = go(expr.left, depth);
+      expr.right = go(expr.right, depth);
+      return expr;
     }
 
     if (expr instanceof Lam) {
-        expr.expr = insertIntoPlaceholder(
-            placeholderId, expr.expr, newExpr
-        );
-        return expr;
+      expr.expr = go(expr.expr, depth + 1);
+      return expr;
     }
 
     if (expr instanceof Placeholder) {
-        if (placeholderId == expr.id)
-            return newExpr;
-        else
-            return expr;
+      if (placeholderId == expr.id) {
+        newExpr = deep_copy(newExpr);
+        newExpr.color = depth;
+        return newExpr;
+      } else {
+        return expr;
+      }
     }
 
     throw "insertIntoPlaceholder: no match";
+  };
+
+  return go(expr, 0);
 }
 
-function make_substitution(expr, expr_into, ix) {
-    let was_subs = false;
+// replace vars of color 'color' with 'what' in 'expr';
+function make_substitution(expr, what, color) {
 
-    function substitution(expr, expr_into, ix) {
-        if (expr instanceof Var) {
-            if (expr.ix == ix) {
-                // make substitution here!
-                was_subs = true;
-                return deep_copy(expr_into);
-            }
-            return expr;
-        }
+  let success = false;
 
-        if (expr instanceof App) {
-        return new App(
-            substitution(expr.left, expr_into, ix),
-            substitution(expr.right, expr_into, ix)
-        );
-        }
-
-        if (expr instanceof Lam) {
-            return new Lam(substitution(expr.expr, expr_into, ix + 1));
-        }
-
-        throw new Error("substitution: no match");
+  function substitution(expr) {
+    if (expr instanceof Var) {
+      if (expr.color == color) {
+        success = true;
+        return deep_copy(what);
+      }
+      return expr;
     }
 
+    if (expr instanceof App) {
+      return new App(
+        substitution(expr.left),
+        substitution(expr.right)
+      );
+    }
 
-    return substitution(expr, expr_into, ix);
+    if (expr instanceof Lam) {
+      if (expr.color == color) {
+        return deep_copy(expr);
+      } else {
+        return new Lam(substitution(expr.expr), expr.color);
+      }
+    }
+
+    throw new Error("substitution: no match");
+  }
+
+
+  return substitution(expr);
 }
 
 function make_reduction_step(expr) {
@@ -182,9 +212,9 @@ function make_reduction_step(expr) {
   if (expr instanceof App) {
     if (expr.left instanceof Lam) {
       return make_substitution(
-        expr.left,
+        expr.left.expr,
         expr.right,
-        expr.left.ix
+        expr.left.color
       );
 
     } else {
@@ -206,80 +236,81 @@ function make_reduction_step(expr) {
 }
 
 function get_all_colors(expr) {
-    if (expr instanceof Var) {
-        return [expr.color]; //new Set([1,2,3,1]);
-    }
+  if (expr instanceof Var) {
+    return [expr.color]; //new Set([1,2,3,1]);
+  }
 
-    if (expr instanceof Lam) {
-        return [expr.color].concat(get_all_colors(expr.expr));
-    }
+  if (expr instanceof Lam) {
+    return [expr.color].concat(get_all_colors(expr.expr));
+  }
 
-    if (expr instanceof App) {
-        return get_all_colors(expr.left).concat(get_all_colors(expr.right));
-    }
+  if (expr instanceof App) {
+    return get_all_colors(expr.left).concat(get_all_colors(expr.right));
+  }
 
-    if (expr instanceof Placeholder) {
-        return [];
-    }
+  if (expr instanceof Placeholder) {
+    return [];
+  }
 
-    throw new Error("get_all_colors: no match");
+  throw new Error("get_all_colors: no match");
 }
 
 function get_colors_for_placeholder(expr, placeholder_in_expr) {
-    let list = [];
-    let found_placeholder = false;
+  let list = [];
+  let found_placeholder = false;
 
-    function colors(expr, placeholder_in_expr) {
-        if (expr instanceof Var) {
-            return;
-        }
-
-        if (expr instanceof Lam) {
-            colors(expr.expr, placeholder_in_expr, list);
-
-            if (found_placeholder) {
-                list.push(expr.color);
-            }
-
-            return;
-        }
-
-        if (expr instanceof App) {
-            colors(expr.left, placeholder_in_expr, list);
-
-            if (found_placeholder)
-                return;
-
-            colors(expr.right, placeholder_in_expr, list);
-
-            return;
-        }
-
-        if (expr instanceof Placeholder) {
-            if (expr.id == placeholder_in_expr.id) {
-                // placeholder is here!
-                found_placeholder = true;
-            }
-
-            return;
-        }
+  function colors(expr, placeholder_in_expr) {
+    if (expr instanceof Var) {
+      return;
     }
 
-    colors(expr, placeholder_in_expr);
+    if (expr instanceof Lam) {
+      colors(expr.expr, placeholder_in_expr, list);
 
-    return list;
+      if (found_placeholder) {
+        list.push(expr.color);
+      }
+
+      return;
+    }
+
+    if (expr instanceof App) {
+      colors(expr.left, placeholder_in_expr, list);
+
+      if (found_placeholder)
+        return;
+
+      colors(expr.right, placeholder_in_expr, list);
+
+      return;
+    }
+
+    if (expr instanceof Placeholder) {
+      if (expr.id == placeholder_in_expr.id) {
+        // placeholder is here!
+        found_placeholder = true;
+      }
+
+      return;
+    }
+  }
+
+  colors(expr, placeholder_in_expr);
+
+  return list;
 }
 
 module.exports = {
-    Expr,
-    Var,
-    App,
-    Lam,
-    Placeholder,
-    insertIntoPlaceholder,
-    make_reduction_step,
-    deep_copy,
-    get_colors_for_placeholder,
-    make_substitution,
-    get_all_colors,
+  Expr,
+  Var,
+  App,
+  Lam,
+  Placeholder,
+  insertIntoPlaceholder,
+  changeColorAt,
+  make_reduction_step,
+  deep_copy,
+  get_colors_for_placeholder,
+  make_substitution,
+  get_all_colors,
 }

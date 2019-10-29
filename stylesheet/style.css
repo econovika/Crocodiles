@@ -101,17 +101,22 @@ body {
     display: inline-flex;
 }
 
+.row, .col {
+    /* border-top: 2px dashed rgba(0,0,0,0.1); */
+    /* margin-top: 10px; */
+}
+
 .row {
     display: inline-block;
     margin: 0 auto;
 }
 
 .left {
-    float: left;
+    /* float: left; */
 }
 
 .right {
-    float: right;
+    /* float: right; */
 }
 
 #swamp {
@@ -142,12 +147,14 @@ body {
 }
 
 .egg {
+    cursor: pointer;
     margin: 0 auto;
     width: 130px;
     height: 130px;
 }
 
 .croco {
+    cursor: pointer;
     /* width: 100px;
     height: 70px;*/
 }
@@ -212,6 +219,7 @@ body {
 }
 
 #button-menu {
+    z-index: 10;
     background-image: url("../img/menu2_button.svg");
     cursor: pointer;
 }
@@ -228,5 +236,3 @@ body {
     right: 0;
     cursor: pointer;
 }
-
-
