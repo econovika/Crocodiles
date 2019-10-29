@@ -149,7 +149,7 @@ body {
 
 .croco-container:hover > .delete,
 .egg:hover > .delete,
-.row-container:hover .delete {
+.row-container:hover > .delete {
     visibility: visible;
 }
 
@@ -318,4 +318,8 @@ body {
     visibility: hidden;
     top: 0;
     right: 100px;
+}
+
+.left {
+    margin-right: 10px;
 }

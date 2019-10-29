@@ -51,7 +51,7 @@ const insertCrocodile = placeholder => overState(state => {
   state.swamp = insertIntoPlaceholder(
     placeholder.id,
     state.swamp,
-    new Lam(new Placeholder())
+    new Lam(new Placeholder(), 0)
   );
   return deep_copy_state(state);
 });

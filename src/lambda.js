@@ -250,7 +250,7 @@ function make_reduction_step(expr) {
     if (t === null) {
       return null;
     } else {
-      return new Lam(t);
+      return new Lam(t, expr.color);
     }
   }
 
