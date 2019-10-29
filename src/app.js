@@ -214,8 +214,7 @@ const renderTerm = (binders, term) => {
 const renderSwamp = state => h('div', { class: 'bg_play', id: 'swamp' }, renderTerm([], state.swamp));
 
 const renderScore = state => {
-
-  return 'qe112';
+  return h('div', { class: 'bg_play', id: 'swamp' }, []); // <--- SCORE
 };
 
 const selectChapter = ix => state => {
