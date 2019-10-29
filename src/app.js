@@ -19,8 +19,6 @@ const L = require('partial.lenses');
 const MENU = 'menu';
 const MAIN = 'main';
 const CHAPTERS = 'chapters';
-const SCORE = 'score';
-const SETTINGS = 'settings';
 const chapters = require('./chapters');
 const colors = require('./colors');
 
@@ -312,10 +310,6 @@ const renderSwamp = state => h('div', { class: 'bg_play', id: 'swamp' },
                                h('div', { id: 'swamp-container' },
                                  renderTerm([], state.swamp)));
 
-const renderScore = state => {
-  return h('div', { class: 'bg_play', id: 'swamp' }, []); // <--- SCORE
-};
-
 const selectChapter = ix => overState(state => {
   state.chapter = ix;
   state.swamp = deep_copy(state.chapters[ix].term);
@@ -338,7 +332,7 @@ window.onload = () => {
   bg.style.opacity = 0;
   setTimeout(() => {
     bg.remove();
-  }, 4500);
+  }, 4000);
 
   app({
     // Startup state
@@ -359,12 +353,11 @@ window.onload = () => {
       let mainView = [];
 
       if (state.mode == MENU) {
-
         mainView = h(
           'div', { class: 'bg_menu', id: 'menu-buttons' }, [
             h(
               'div', { class: 'menu-button', id: 'button-container' },
-              [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
+              [ MAIN, CHAPTERS ].map(
                 mode => h(
                   'div',
                   { class: 'container-select',
@@ -373,13 +366,23 @@ window.onload = () => {
                   }
                 )
               )
+            ),
+            h(
+              'div',
+              { id: 'description-container' },
+              [ 'Inspired by ',
+                h(
+                  'a', { href: 'http://worrydream.com/AlligatorEggs/' },
+                  'Bret Victor\'s blogpost'),
+                '.'
+              ]
             )
           ]
         );
-      }
 
-      else if (state.mode == MAIN) {
+      } else if (state.mode == MAIN) {
         mainView = renderSwamp(state);
+
       } else if (state.mode == CHAPTERS) {
         mainView = h('div', { class: 'bg_menu' }, [
           h(
@@ -400,10 +403,6 @@ window.onload = () => {
         ]);
       } else {
         mainView = h('div', { class: 'bg_menu' });
-      }
-
-      if (state.mode == SCORE) {
-        mainView = renderScore(state);
       }
 
       return h('div', {}, [
