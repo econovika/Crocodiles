@@ -77,6 +77,8 @@ class Placeholder extends Expr {
 }
 
 function deep_copy(expr) {
+    console.log('deep_copy', expr);
+
     if (expr instanceof Var) {
         return new Var(expr.ix, expr.color);
     }
@@ -92,6 +94,8 @@ function deep_copy(expr) {
     if (expr instanceof Placeholder) {
         return new Placeholder(expr.id);
     }
+
+    throw new Error("deep_copy: no match");
 }
 
 function insertIntoPlaceholder (placeholderId, expr, newExpr) {
@@ -126,11 +130,12 @@ function insertIntoPlaceholder (placeholderId, expr, newExpr) {
         else
             return expr;
     }
-    throw new Error("Incorrect term");
+
+    throw "insertIntoPlaceholder: no match";
 }
 
 function make_substitution(expr, expr_into, ix) {
-    was_subs = false;
+    let was_subs = false;
 
     function substitution(expr, expr_into, ix) {
         if (expr instanceof Var) {
@@ -152,9 +157,11 @@ function make_substitution(expr, expr_into, ix) {
         if (expr instanceof Lam) {
             return new Lam(substitution(expr.expr, expr_into, ix + 1));
         }
+
+        throw new Error("substitution: no match");
     }
 
-    
+
     return substitution(expr, expr_into, ix);
 }
 
@@ -195,7 +202,7 @@ function make_reduction_step(expr) {
     }
   }
 
-  throw new Error();
+  throw new Error("make_reduction_step: no match");
 }
 
 function get_all_colors(expr) {
@@ -204,7 +211,7 @@ function get_all_colors(expr) {
     }
 
     if (expr instanceof Lam) {
-        return [expr.color].concat(get_all_colors(expr.expr))
+        return [expr.color].concat(get_all_colors(expr.expr));
     }
 
     if (expr instanceof App) {
@@ -214,11 +221,13 @@ function get_all_colors(expr) {
     if (expr instanceof Placeholder) {
         return [];
     }
+
+    throw new Error("get_all_colors: no match");
 }
 
 function get_colors_for_placeholder(expr, placeholder_in_expr) {
-    list = []
-    found_placeholder = false
+    let list = [];
+    let found_placeholder = false;
 
     function colors(expr, placeholder_in_expr) {
         if (expr instanceof Var) {
@@ -229,7 +238,7 @@ function get_colors_for_placeholder(expr, placeholder_in_expr) {
             colors(expr.expr, placeholder_in_expr, list);
 
             if (found_placeholder) {
-                list.push(expr.color)
+                list.push(expr.color);
             }
 
             return;
