@@ -154,7 +154,8 @@ function make_substitution(expr, expr_into, ix) {
         }
     }
 
-    return was_subs;
+    
+    return substitution(expr, expr_into, ix);
 }
 
 function make_reduction_step(expr) {

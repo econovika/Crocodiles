@@ -200,7 +200,7 @@ const renderTerm = (binders, term) => {
   if (term instanceof Lam) {
     return h('div', { class: 'crocodile' }, [
       renderCrocodile(term),
-      renderTerm(binders.concat([term.name]), term.expr)
+      renderTerm(binders.concat([term.name]), term.expr) // wtf is name?
     ]);
   }
 
@@ -212,6 +212,11 @@ const renderTerm = (binders, term) => {
 };
 
 const renderSwamp = state => h('div', { id: 'swamp' }, renderTerm([], state.swamp));
+
+const renderScore = state => {
+
+  return 'qe112';
+};
 
 const selectChapter = ix => state => {
   state.chapter = ix;
@@ -268,6 +273,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       if (state.mode == MAIN) {
         mainView = renderSwamp(state);
+      }
+
+      if (state.mode == SCORE) {
+        mainView = renderScore(state)
       }
 
       return h('div', {}, [
