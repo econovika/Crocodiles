@@ -228,7 +228,10 @@ body {
 
 #menu-buttons {
     position: absolute;
-    padding-top: 60px;
+}
+
+#button-container {
+    margin-top: 8%;
 }
 
 #button-main {

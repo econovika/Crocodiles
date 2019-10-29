@@ -309,13 +309,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
         mainView = h(
           'div', { class: 'bg_menu', id: 'menu-buttons' },
-          [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
-            mode => h(
-              'div',
-              { class: 'container-select',
-                id: 'button-' + mode,
-                onClick: modeSetter(mode)
-              }
+          h(
+            'div', { id: 'button-container' },
+            [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
+              mode => h(
+                'div',
+                { class: 'container-select',
+                  id: 'button-' + mode,
+                  onClick: modeSetter(mode)
+                }
+              )
             )
           )
         );
