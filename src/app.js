@@ -19,9 +19,19 @@ const SCORE = 'score';
 const SETTINGS = 'settings';
 const chapters = require('./chapters');
 
-const modeSetter = mode => state => L.set('mode', mode, state);
+const overState = f => appstate =>
+      L.set(
+        'history',
+        appstate.history.concat(
+          [ deep_copy_state(appstate.state) ]
+        ),
+        L.set('state', f(appstate.state), appstate)
+      );
+
+const modeSetter = mode => overState(state => L.set('mode', mode, state));
 
 const deep_copy_state = state => {
+
   const obj = {
     mode: state.mode,
     chapter: state.chapter,
@@ -31,48 +41,42 @@ const deep_copy_state = state => {
     input: deep_copy(state.input),
   };
 
-  console.log('copy', state.history);
-
-  obj.history = state.history.concat(
-    [ Object.assign({}, obj) ]
-  );
-
   return obj;
 };
 
-const deleteCrocodile = name => state => {
-  const state_ = deep_copy_state(state);
-  return state_;
-};
+const deleteCrocodile = name => overState(state => {
+  return deep_copy_state(state);
+});
 
-const insertCrocodile = placeholder => state => {
+const insertCrocodile = placeholder => overState(state => {
   state.swamp = insertIntoPlaceholder(
     placeholder.id,
     state.swamp,
     new Lam(new Placeholder())
   );
-  return Object.assign({}, state);
-};
+  return deep_copy_state(state);
+});
 
-const insertEgg = placeholder => state => {
-  state.swamp = insertIntoPlaceholder(
+const insertEgg = placeholder => overState(state => {
+  const newState = deep_copy_state(state);
+  newState.swamp = insertIntoPlaceholder(
     placeholder.id,
     state.swamp,
     new Var(0)
   );
-  return Object.assign({}, state);
-};
+  return newState;
+});
 
 // split in two
-const insertPlaceholders = placeholder => state => {
+const insertPlaceholders = placeholder => overState(state => {
   state.swamp = insertIntoPlaceholder(
     placeholder.id,
     state.swamp,
     new App (new Placeholder(), new Placeholder())
   );
 
-  return Object.assign({}, state);
-};
+  return deep_copy_state(state);
+});
 
 const renderPlaceholder = placeholder =>
       h('div', { class: 'placeholder',
@@ -120,15 +124,15 @@ const renderCrocodile = name =>
         )
       ]);
 
-const changeEggColor = state => {
-  return state;
+const changeEggColor = appstate => {
+  return appstate;
 };
 
-const changeCrocodileColor = state => {
-  return state;
+const changeCrocodileColor = appstate => {
+  return appstate;
 };
 
-const forward = state => {
+const forward = overState(state => {
   const newState = deep_copy_state(state);
   const new_swamp = make_reduction_step(newState.swamp);
   if (new_swamp === null) {
@@ -136,17 +140,18 @@ const forward = state => {
   }
   newState.swamp = new_swamp;
   return newState;
-};
+});
 
-const back = state => {
-  console.log('back', state.history);
-  const oldState = state.history.slice(-1)[0];
-  if (typeof oldState === 'undefined') {
-    console.log('no older state');
-    return state;
+const back = appstate => {
+  const last = (appstate.history || []).slice(-1)[0];
+
+  if (typeof last === 'undefined') {
+    return appstate;
   } else {
-    console.log('old state', oldState);
-    return oldState;
+    return {
+      state: deep_copy_state(last),
+      history: appstate.history.slice(0, -1)
+    };
   }
 };
 
@@ -217,7 +222,7 @@ const renderScore = state => {
   return h('div', { class: 'bg_play', id: 'swamp' }, []); // <--- SCORE
 };
 
-const selectChapter = ix => state => {
+const selectChapter = ix => overState(state => {
   state.chapter = ix;
   console.log(state);
   state.goal = state.chapters[ix].goal;
@@ -225,7 +230,7 @@ const selectChapter = ix => state => {
   state.swamp = new Placeholder();
   state.mode = MAIN;
   return Object.assign({}, state);
-};
+});
 
 const renderChapters = state => h(
   'div', { class: 'chapters' },
@@ -239,19 +244,19 @@ const renderChapters = state => h(
 document.addEventListener('DOMContentLoaded', () => {
   app({
     // Startup state
-    init: { mode: MENU,
-            chapter: 0,
-            chapters: chapters,
-            swamp: // new Placeholder(),
-            new App(new Lam(new Var(0)),
-                    new Lam(new Var(0))),
-            history: [],
-            // new Lam(new App (new Var(0),
-            //                         new App (new Var(1),
-            //                                  new Placeholder())))
+    init: { state: { mode: MENU,
+                     chapter: 0,
+                     chapters: chapters,
+                     swamp: new Placeholder(),
+                     input: new Var(0),
+                     goal: new Var(0),
+                   },
+            history: []
           },
 
-    view: state => {
+    view: appstate => {
+      const state = appstate.state;
+
       console.log(state);
       let mainView = [];
 
