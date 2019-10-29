@@ -59,6 +59,20 @@ body {
     transform: translateY(4px);
 }
 
+.button{
+    position: fixed;
+    bottom: 0;
+    margin: 20px;
+    background-repeat: no-repeat;
+    background-size: contain;
+    width: 150px;
+    height: 150px;
+}
+
+.button:active {
+    transform: translateY(4px);
+}
+
 @keyframes moving {
     0% {
         transform: rotate(-40deg)  /*translateX(30px)*/;
@@ -195,6 +209,17 @@ body {
 
 #button-menu {
     background-image: url("../img/menu2_button.svg");
+}
+
+
+#button-back {
+    background-image: url("../img/backwards_button.svg");
+    left: 0;
+}
+
+#button-forward {
+    background-image: url("../img/forwards_button.svg");
+    right: 0;
 }
 
 

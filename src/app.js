@@ -303,13 +303,11 @@ document.addEventListener('DOMContentLoaded', () => {
               h('div', { class: 'button',
                          id: 'button-back',
                          onClick: back
-                       },
-                'back'),
+                       }),
               h('div', { class: 'button',
                          id: 'button-forward',
                          onClick: forward
-                       },
-                'forward'),
+                       }),
             ] : []
           )
          ),
