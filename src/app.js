@@ -325,11 +325,11 @@ document.addEventListener('DOMContentLoaded', () => {
         mainView = renderSwamp(state);
       }
       else {
-        mainView = h( 'div', {class: 'bg_menu'})
+        mainView = h( 'div', { class: 'bg_menu' });
       }
 
       if (state.mode == SCORE) {
-        mainView = renderScore(state)
+        mainView = renderScore(state);
       }
 
       return h('div', {}, [
