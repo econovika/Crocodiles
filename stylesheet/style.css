@@ -3,18 +3,34 @@ body {
     padding: 0;
 }
 
-#app {
+.bg_menu {
+    height: 100%;
+    width: 100%;
+    background-image: url("../img/croco_sky.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
     text-align: center;
+}
+
+.bg_play {
+    background-image: url("../img/croco_sky_blur.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
+    text-align: center;
+}
+
+
+#app {
+    /*background-image: url("../img/croco_sky.svg");*/
     position: absolute;
     top: 0;
     right: 0;
     bottom: 0;
     left: 0;
-    background-color: #DDD;
-}
-
-#toolbar {
-    background-color: yellow;
 }
 
 .container-select {
@@ -30,14 +46,13 @@ body {
 }
 
 .container-menu {
-    margin: 0 auto;
-    position: relative;
-    top: -32px;
-    right: -468px;
+    position: fixed;
+    right: 0;
+    margin: 20px;
     background-repeat: no-repeat;
     background-size: contain;
-    width: 190px;
-    height: 75px;
+    width: 150px;
+    height: 150px;
 }
 
 .container-menu:active {
@@ -90,7 +105,6 @@ body {
     overflow: auto;
     width: 100%;
     margin: 0 auto;
-    background-color: green;
 }
 
 .croco-container {
@@ -159,6 +173,7 @@ body {
 }
 
 #menu-buttons {
+    position: absolute;
     margin-top: 40px;
 }
 
@@ -181,3 +196,5 @@ body {
 #button-menu {
     background-image: url("../img/menu2_button.svg");
 }
+
+
