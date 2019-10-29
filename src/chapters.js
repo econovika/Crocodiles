@@ -4,7 +4,7 @@ const {
   App,
   Lam,
   Placeholder,
-  deep_copy,
+  copyExpr,
 } = require('./lambda.js');
 
 const S = new Lam(new Lam(new Lam(
@@ -49,22 +49,21 @@ module.exports = [
     )
   },
 
+  { title: 'SKK',
+    description: 'Show that SKK = I',
+    term: new App(new App(copyExpr(S), copyExpr(K)), copyExpr(K))
+  },
 
-  { title: '0 + 0 = 0',
-    description: '',
+  { title: 'A + B = ?',
+    description: 'A sum combinator with two placeholders for church-encoded numbers',
     term:
       new App(
         new App(
-          deep_copy(plus),
-          deep_copy(K)
+          copyExpr(plus),
+          copyExpr(new Placeholder())
         ),
-        deep_copy(K)
+        copyExpr(new Placeholder())
       )
   },
-
-  { title: 'SKK',
-    description: 'Show that SKK = I',
-    term: new App(new App(deep_copy(S), deep_copy(K)), deep_copy(K))
-  }
 
 ];

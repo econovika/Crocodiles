@@ -112,7 +112,7 @@ body {
     top: -30px;
 }
 
-.croco-container.marked > .jaw {
+.croco-container.attacking > .jaw {
     animation: none;
     transform: rotate(35deg) /*ranslateX(30px)*/;
     transform-origin: 20px 20px;
@@ -175,7 +175,7 @@ body {
     border-color: #999;
 }
 
-.marked {
+.attacking {
     transform: scale(1.8) rotate(25deg) translateX(120px) translateY(-70px);
     z-index: 20;
 }
@@ -218,6 +218,7 @@ body {
 
 .insert-crocodile, .insert-egg, .insert-placeholders {
     display: none;
+    position: relative;
 }
 
 .insert-placeholders-preview {
@@ -242,6 +243,14 @@ body {
 
 .insert-crocodile-img {
     width: 60px;
+    cursor: pointer;
+}
+
+.insert-crocodile-jaws {
+    width: 20px;
+    top: 16px;
+    right: 36px;
+    position: absolute;
     cursor: pointer;
 }
 

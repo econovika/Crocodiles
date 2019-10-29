@@ -1,3 +1,5 @@
+/* global require setTimeout */
+
 const {
   Expr,
   Var,
@@ -6,15 +8,15 @@ const {
   Placeholder,
   insertIntoPlaceholder,
   changeColorAt,
-  make_reduction_step,
-  deep_copy,
+  reduce,
+  copyExpr,
   markRedex,
   replaceWithPlaceholder,
 } = require('./lambda.js');
 
 const { h, app } = require('hyperapp');
 const { Debounce } = require('hyperapp-fx');
-const L = require('partial.lenses');
+const lens = require('partial.lenses');
 
 const MENU = 'menu';
 const MAIN = 'main';
@@ -22,107 +24,101 @@ const CHAPTERS = 'chapters';
 const chapters = require('./chapters');
 const colors = require('./colors');
 
-const overState = f => appstate =>
-      L.set(
-        'history',
-        appstate.history.concat(
-          [ deep_copy_state(appstate.state) ]
-        ),
-        L.set('state', f(appstate.state), appstate)
-      );
 
-const modeSetter = mode => overState(state => L.set('mode', mode, state));
+/* Working with app state. */
 
-const deep_copy_state = state => {
 
+/* Deep-copy state object, resetting attributes on the fly.
+*/
+const copyState = state => {
   const obj = Object.assign({}, state);
 
-  obj.swamp = deep_copy(obj.swamp);
-  obj.goal = deep_copy(obj.goal);
-  obj.input = deep_copy(obj.input);
+  obj.swamp = copyExpr(obj.swamp);
+  obj.goal = copyExpr(obj.goal);
+  obj.input = copyExpr(obj.input);
   obj.backButtonHidden = false;
 
   return obj;
 };
 
-const insertCrocodile = placeholder => overState(state => {
+/* Map `.state` using a given function.
+
+   @param {Function} f - Function to apply to the state
+   @param {appstate} appstate - application state
+   @returns {appstate}
+*/
+const overState = f => appstate => {
+  return lens.set(
+    'history',
+    appstate.history.concat(
+      [ copyState(appstate.state) ]
+    ),
+    lens.set('state', f(appstate.state), appstate)
+  );
+};
+
+/* `overState` variant that does not save the state in history.
+
+   @param {Function} f - Function to apply to the state
+   @param {appstate} appstate - application state
+   @returns {appstate}
+*/
+const overStateWithoutHistory = f => appstate => {
+  const newState = copyState(appstate.state);
+  return lens.set(
+    'history',
+    appstate.history.concat(
+      [ newState ]
+    ),
+    lens.set('state', f(newState), appstate)
+  );
+};
+
+/* @param mode - mode tag
+   @returns - a new appstate in given mode
+*/
+const modeSetter = mode =>
+      overState(state => lens.set('mode', mode, state));
+
+
+/* Inserting things into the swamp */
+
+const insertAnything = whatever => placeholder => overState(state => {
   state.swamp = insertIntoPlaceholder(
     placeholder.id,
     state.swamp,
-    new Lam(new Placeholder(), 0)
+    whatever
   );
-  return deep_copy_state(state);
+  return copyState(state);
 });
 
-const insertEgg = placeholder => overState(state => {
-  const newState = deep_copy_state(state);
-  newState.swamp = insertIntoPlaceholder(
-    placeholder.id,
-    state.swamp,
-    new Var(0)
-  );
-  return newState;
-});
 
-// split in two
-const insertPlaceholders = placeholder => overState(state => {
-  state.swamp = insertIntoPlaceholder(
-    placeholder.id,
-    state.swamp,
-    new App (new Placeholder(), new Placeholder())
-  );
+const insertCrocodile = insertAnything(new Lam(new Placeholder(), 0));
+const insertEgg = insertAnything(new Var(0));
+const insertPlaceholders = insertAnything(new App (new Placeholder(), new Placeholder()));
 
-  return deep_copy_state(state);
-});
 
-const renderPlaceholder = placeholder =>
-      h('div', { class: 'placeholder',
-               },
-        [ h('span', { class: 'insert-crocodile',
-                      onClick: insertCrocodile(placeholder)
-                    },
-            h('span', { class: 'insert-crocodile' }, [
-              h('img', {
-                src: 'img/crocodiles/green_body.svg',
-                class: 'insert-crocodile-img'
-              })
-            ])
-           ),
-
-          h('span', { class: 'insert-egg',
-                      onClick: insertEgg(placeholder)
-                    },
-            [
-              h('img', {
-                src: 'img/crocodiles/green_egg.svg',
-                class: 'insert-egg-img'
-              })
-            ]
-           ),
-
-          h('span', { class: 'insert-placeholders',
-                      onClick: insertPlaceholders(placeholder)
-                    },
-            [ h('div', { class: 'insert-placeholders-preview' }),
-            ]
-           )
-
-        ]
-       );
+/* Modifying swamp contents */
 
 const deleteEntry = id => overState(state => {
-  state.swamp = deep_copy(replaceWithPlaceholder(id, state.swamp));
+  state.swamp = copyExpr(replaceWithPlaceholder(id, state.swamp));
   return Object.assign({}, state);
 });
 
-const changeColor = id => overState(state => {
-  state.swamp = changeColorAt(state.swamp, id);
+const increment = x => x + 1;
+const decrement = x => x - 1;
+
+const changeColor = (id, f = increment) => overState(state => {
+  state.swamp = changeColorAt(state.swamp, id, f);
   return state;
 });
 
+
+/* Evalutating */
+
 const forward = overState(state => {
-  const newState = deep_copy_state(state);
-  const new_swamp = make_reduction_step(newState.swamp);
+  const newState = copyState(state);
+  const new_swamp = reduce(newState.swamp);
   if (new_swamp === null) {
     return state;
   }
@@ -132,7 +128,7 @@ const forward = overState(state => {
 });
 
 const previewForward = appstate => {
-  const newSwamp = deep_copy(appstate.state.swamp);
+  const newSwamp = copyExpr(appstate.state.swamp);
   const res = markRedex(newSwamp);
   if (res) {
     appstate.state = Object.assign({}, appstate.state);
@@ -159,13 +155,67 @@ const back = appstate => {
     return appstate;
   } else {
     return {
-      state: deep_copy_state(last),
+      state: copyState(last),
       history: appstate.history.slice(0, -1)
     };
   }
 };
 
-const renderTerm = (binders, term) => {
+
+/* Rendering */
+
+const renderPlaceholder = (placeholder, depth) =>
+      h('div', { class: 'placeholder',
+               },
+        [ h('span', { class: 'insert-crocodile',
+                      onClick: insertCrocodile(placeholder)
+                    },
+            h('span', { class: 'insert-crocodile' }, [
+              h('img', {
+                src: (
+                  'img/crocodiles/' +
+                    colors[colors.normalize(depth)] +
+                    '_body.svg'
+                ),
+                class: 'insert-crocodile-img'
+              }),
+              h('img', {
+                src: (
+                  'img/crocodiles/' +
+                    colors[colors.normalize(depth)] +
+                    '_jaws.svg'
+                ),
+                class: 'insert-crocodile-jaws'
+              })
+            ])
+           ),
+
+          h('span', { class: 'insert-egg',
+                      onClick: insertEgg(placeholder)
+                    },
+            [
+              h('img', {
+                src: (
+                  'img/crocodiles/' +
+                    colors[colors.normalize(depth-1)] +
+                    '_egg.svg'
+                ),
+                class: 'insert-egg-img'
+              })
+            ]
+           ),
+
+          h('span', { class: 'insert-placeholders',
+                      onClick: insertPlaceholders(placeholder)
+                    },
+            [ h('div', { class: 'insert-placeholders-preview' }),
+            ]
+           )
+
+        ]
+       );
+
+const renderTerm = (term, depth = 0) => {
 
   const mkClassName = cn => {
     // Subfamily that is going to be eaten.
@@ -174,8 +224,8 @@ const renderTerm = (binders, term) => {
     }
 
     // Alligator that is going to eat.
-    if (term.marked && cn != 'crocodile') {
-      cn += ' marked';
+    if (term.attacking && cn != 'crocodile') {
+      cn += ' attacking';
     }
 
     // Eggs that are going to hatch.
@@ -198,7 +248,7 @@ const renderTerm = (binders, term) => {
     return h(
       'div',
       { class: mkClassName('egg') }, [
-        h('img', { onClick: changeColor(term.id),
+        h('img', { onClick: changeColor(term.id, decrement),
                    class: 'egg-image',
                    src: 'img/crocodiles/' + color + '_egg.svg' }),
         h(
@@ -220,12 +270,12 @@ const renderTerm = (binders, term) => {
         [ h(
           'div',
           { },
-          renderTerm(binders, term.left),
+          renderTerm(term.left, depth),
         ),
           h(
             'div',
             {},
-            renderTerm(binders, term.right)
+            renderTerm(term.right, depth)
           )
         ]);
     } else {
@@ -245,12 +295,12 @@ const renderTerm = (binders, term) => {
               h(
                 'td',
                 { class: 'left' },
-                renderTerm(binders, term.left)
+                renderTerm(term.left, depth)
               ),
               h(
                 'td',
                 { class: 'right' },
-                renderTerm(binders, term.right)
+                renderTerm(term.right, depth)
               )
             ])
           )].concat(
@@ -261,15 +311,14 @@ const renderTerm = (binders, term) => {
     }
   }
 
-
   if (term instanceof Lam) {
 
     const renderCrocodile = (term) => {
       let color = colors[term.color];
       let className = 'croco-container';
 
-      if (term.marked) {
-        className += ' marked';
+      if (term.attacking) {
+        className += ' attacking';
       }
 
       return h(
@@ -295,27 +344,29 @@ const renderTerm = (binders, term) => {
 
     return h('div', { class: mkClassName('crocodile') }, [
       renderCrocodile(term),
-      renderTerm(binders.concat([term.name]), term.expr) // wtf is name?
+      renderTerm(term.expr, depth + 1)
     ]);
   }
 
   if (term instanceof Placeholder) {
-    return renderPlaceholder(term);
+    return renderPlaceholder(term, depth);
   }
 
   throw new Error('Not a term');
 };
 
+
 const renderSwamp = state => h('div', { class: 'bg_play', id: 'swamp' },
                                h('div', { id: 'swamp-container' },
-                                 renderTerm([], state.swamp)));
+                                 renderTerm(state.swamp)));
 
 const selectChapter = ix => overState(state => {
   state.chapter = ix;
-  state.swamp = deep_copy(state.chapters[ix].term);
+  state.swamp = copyExpr(state.chapters[ix].term);
   state.mode = MAIN;
   return Object.assign({}, state);
 });
+
 
 const renderChapters = state => h(
   'div', { class: 'chapters' },
@@ -326,6 +377,21 @@ const renderChapters = state => h(
   )
 );
 
+/* Initial state */
+const initialAppState = {
+  state: { mode: MENU,
+           chapter: 0,
+           chapters: chapters,
+           swamp: new Placeholder(),
+           backButtonHidden: false,
+           input: new Var(0),
+           goal: new Var(0),
+         },
+  history: []
+};
+
+
+// Yes, we really want `window.onload` here.
 window.onload = () => {
 
   const bg = document.querySelector('#alternative-bg');
@@ -335,25 +401,17 @@ window.onload = () => {
   }, 4000);
 
   app({
-    // Startup state
-    init: { state: { mode: MENU,
-                     chapter: 0,
-                     chapters: chapters,
-                     swamp: new Placeholder(),
-                     backButtonHidden: false,
-                     input: new Var(0),
-                     goal: new Var(0),
-                   },
-            history: []
-          },
+    // Initial state
+    init: initialAppState,
 
     view: appstate => {
       const state = appstate.state;
 
-      let mainView = [];
+      let mainContents = [];
 
       if (state.mode == MENU) {
-        mainView = h(
+
+        mainContents = h(
           'div', { class: 'bg_menu', id: 'menu-buttons' }, [
             h(
               'div', { class: 'menu-button', id: 'button-container' },
@@ -367,24 +425,28 @@ window.onload = () => {
                 )
               )
             ),
+
             h(
               'div',
               { id: 'description-container' },
               [ 'Inspired by ',
                 h(
-                  'a', { href: 'http://worrydream.com/AlligatorEggs/' },
+                  'a', { href: 'http://worrydream.com/AlligatorEggs/',
+                         target: '_blank'
+                       },
                   'Bret Victor\'s blogpost'),
                 '.'
+                // TODO: insert authors
               ]
             )
           ]
         );
 
       } else if (state.mode == MAIN) {
-        mainView = renderSwamp(state);
+        mainContents = renderSwamp(state);
 
       } else if (state.mode == CHAPTERS) {
-        mainView = h('div', { class: 'bg_menu' }, [
+        mainContents = h('div', { class: 'bg_menu' }, [
           h(
             'div', { class: 'chapters' },
             chapters.map(
@@ -395,17 +457,19 @@ window.onload = () => {
                          }, [
                     h('div', { class: 'chapter-title' }, chapter.title),
                     h('div', { class: 'chapter-description' }, chapter.description),
-
                   ]
                 )
             )
           )
         ]);
+
       } else {
-        mainView = h('div', { class: 'bg_menu' });
+        mainContents = h('div', { class: 'bg_menu' });
       }
 
       return h('div', {}, [
+
+        // Add toolbar buttons
         h(
           'div',
           { id: 'toolbar'},
@@ -418,6 +482,7 @@ window.onload = () => {
                )
             ]
           ).concat(
+
             state.mode == MAIN && !state.backButtonHidden ? [
               h('div', { class: 'button',
                          id: 'button-back',
@@ -429,8 +494,9 @@ window.onload = () => {
                        }),
             ] : []
           )
-         ),
-        mainView
+        ),
+
+        mainContents
       ]);
 
     },
