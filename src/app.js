@@ -160,21 +160,24 @@ const forward = overState(state => {
 
 const previewForward = appstate => {
   const newSwamp = deep_copy(appstate.state.swamp);
-  markRedex(newSwamp);
-  console.log('pf');
-  appstate.state = Object.assign({}, appstate.state);
-  appstate.state.swamp = newSwamp;
-  appstate.state.backButtonHidden = true;
+  const res = markRedex(newSwamp);
+  if (res) {
+    appstate.state = Object.assign({}, appstate.state);
+    appstate.state.swamp = newSwamp;
+    appstate.state.backButtonHidden = true;
+  }
   return Object.assign({}, appstate);
 };
 
-const debouncedForward = state => [
-  previewForward(state),
-  Debounce({
-    wait: 1000,
-    action: forward
-  })
-];
+const debouncedForward = state => {
+  return [
+    previewForward(state),
+    Debounce({
+      wait: 1000,
+      action: forward
+    })
+  ]
+};
 
 const back = appstate => {
   const last = (appstate.history || []).slice(-1)[0];
@@ -270,9 +273,7 @@ const renderScore = state => {
 
 const selectChapter = ix => overState(state => {
   state.chapter = ix;
-  state.goal = state.chapters[ix].goal;
-  state.input = state.chapters[ix].input;
-  state.swamp = new Placeholder();
+  state.swamp = state.chapters[ix].term;
   state.mode = MAIN;
   return Object.assign({}, state);
 });
@@ -336,9 +337,21 @@ window.onload = () => {
         mainView = renderSwamp(state);
       } else if (state.mode == CHAPTERS) {
         mainView = h('div', { class: 'bg_menu' }, [
-          h('div', { class: 'chapters' }, chapters.map(chapter => {
+          h(
+            'div', { class: 'chapters' },
+            chapters.map(
+              (chapter, ix) =>
+                h(
+                  'div', { class: 'chapter',
+                           onClick: selectChapter(ix)
+                         }, [
+                    h('div', { class: 'chapter-title' }, chapter.title),
+                    h('div', { class: 'chapter-description' }, chapter.description),
 
-          }))
+                  ]
+                )
+            )
+          )
         ]);
       } else {
         mainView = h('div', { class: 'bg_menu' });
