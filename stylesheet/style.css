@@ -193,33 +193,40 @@ body {
 
 #button-main {
     background-image: url("../img/button_play.svg");
+    cursor: pointer;
 }
 
 #button-chapters {
     background-image: url("../img/button_chapters.svg");
+    cursor: pointer;
 }
 
 #button-score {
     background-image: url("../img/button_score.svg");
+    cursor: pointer;
 }
 
 #button-settings {
     background-image: url("../img/button_settings.svg");
+    cursor: pointer;
 }
 
 #button-menu {
     background-image: url("../img/menu2_button.svg");
+    cursor: pointer;
 }
 
 
 #button-back {
     background-image: url("../img/backwards_button.svg");
     left: 0;
+    cursor: pointer;
 }
 
 #button-forward {
     background-image: url("../img/forwards_button.svg");
     right: 0;
+    cursor: pointer;
 }
 
 
