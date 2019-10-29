@@ -1,12 +1,17 @@
 const {
-    Expr,
-    Var,
-    App,
-    Lam,
-    dfs,
+  Expr,
+  Var,
+  App,
+  Lam,
+  Placeholder,
 } = require('./lambda.js');
 
 module.exports = [
+  { title: 'Empty',
+    description: 'Create a new term',
+    term: new Placeholder()
+  },
+
   { title: '(\\x.xx)(\\x.xx)',
     description: 'Reduces to itself',
     term: new App(

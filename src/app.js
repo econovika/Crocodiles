@@ -176,7 +176,7 @@ const debouncedForward = state => {
       wait: 1000,
       action: forward
     })
-  ]
+  ];
 };
 
 const back = appstate => {
@@ -293,7 +293,7 @@ window.onload = () => {
   bg.style.opacity = 0;
   setTimeout(() => {
     bg.remove();
-  }, 5000);
+  }, 4500);
 
   app({
     // Startup state

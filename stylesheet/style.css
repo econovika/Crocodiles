@@ -285,3 +285,20 @@ body {
     right: 0;
     cursor: pointer;
 }
+
+.chapters {
+    margin-top: 8%;
+}
+
+.chapter {
+    background-color: rgba(20,100,100,0.5);
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.chapter-title {
+    font-weight: bold;
+}
