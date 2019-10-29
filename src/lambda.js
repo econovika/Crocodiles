@@ -92,6 +92,7 @@ function deep_copy(expr) {
   }
 
   if (expr instanceof Placeholder) {
+    // No need to move `.fresh` here
     return new Placeholder(expr.id);
   }
 
@@ -158,7 +159,6 @@ function mapAt (id, expr, f) {
 
 const replaceWithPlaceholder = (id, expr) => {
   return mapAt(id, expr, (old, depth) => {
-    console.log('replacing');
     return new Placeholder();
   });
 };
@@ -184,7 +184,9 @@ function make_substitution(expr, what, color) {
     if (expr instanceof Var) {
       if (expr.color == color) {
         success = true;
-        return deep_copy(what);
+        const res = deep_copy(what);
+        res.fresh = true;
+        return res;
       }
       return expr;
     }
@@ -211,6 +213,23 @@ function make_substitution(expr, what, color) {
   return substitution(expr);
 }
 
+function rotateEggs(expr, colorId) {
+  if (expr instanceof Var) {
+    if (expr.color == colorId) {
+      expr.rotated = true;
+    }
+  }
+
+  if (expr instanceof Lam) {
+    rotateEggs(expr.expr, colorId);
+  }
+
+  if (expr instanceof App) {
+    rotateEggs(expr.left, colorId);
+    rotateEggs(expr.right, colorId);
+  }
+}
+
 function markRedex(expr) {
   if (expr instanceof Var) {
     return null;
@@ -223,10 +242,10 @@ function markRedex(expr) {
   if (expr instanceof App) {
     if (expr.left instanceof Lam) {
       expr.left = deep_copy(expr.left);
+      rotateEggs(expr.left.expr, expr.left.color);
       expr.left.marked = true;
       expr.right = deep_copy(expr.right);
       expr.right.eaten = true;
-      console.log('marked');
       return true;
     } else {
       return markRedex(expr.left) || markRedex(expr.right);
@@ -257,6 +276,7 @@ function make_reduction_step(expr) {
   if (expr instanceof App) {
     if (expr.left instanceof Lam) {
       return make_substitution(
+        // TODO: maybe we need another `deep_copy` call here?
         expr.left.expr,
         expr.right,
         expr.left.color

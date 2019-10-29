@@ -104,11 +104,17 @@ body {
 
 .jaw {
     animation-name: moving;
-    animation-duration: 0.92s;
+    animation-duration: 0.1s;
     animation-iteration-count: infinite;
     position: relative;
     left: -150px;
     top: -30px;
+}
+
+.croco-container.marked > .jaw {
+    animation: none;
+    transform: rotate(35deg) /*ranslateX(30px)*/;
+    transform-origin: 20px 20px;
 }
 
 .col {
@@ -174,26 +180,22 @@ body {
 }
 
 .eaten {
-    transform: scale(0.8);
-    animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+    animation-name: eaten;
+    animation-duration: 1s;
+    animation-transition-function: ease-in-out;
 }
 
-@keyframes shake {
-  10%, 45%, 65%, 85%, 90% {
-    transform: translate3d(-1px, 0, 0);
-  }
+.rotated {
+    transform: rotate(90deg);
+}
 
-  20%, 15%, 55%, 30%, 80% {
-    transform: translate3d(2px, 0, 0);
-  }
-
-  30%, 50%, 70% {
-    transform: translate3d(-4px, 0, 0);
-  }
-
-  40%, 95%, 25%, 75%, 60% {
-    transform: translate3d(4px, 0, 0);
-  }
+@keyframes eaten {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
 }
 
 .egg {
@@ -323,4 +325,18 @@ body {
 
 .left {
     margin-right: 10px;
+}
+
+.fresh {
+    animation-name: fresh;
+    animation-duration: 1s;
+}
+
+@keyframes fresh {
+    from {
+        transform: scale(0.1);
+    }
+    to {
+        transform: scale(1);
+    }
 }

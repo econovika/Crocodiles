@@ -117,35 +117,6 @@ const deleteEntry = id => overState(state => {
   return Object.assign({}, state);
 });
 
-const renderCrocodile = (term) => {
-  let color = colors[term.color];
-  let className = 'croco-container';
-
-  if (term.marked) {
-    className += ' marked';
-  }
-
-  return h(
-    'div', { class: className }, [
-
-      h('img', { class: 'croco',
-                 onClick: changeColor(term.id),
-                 src: 'img/crocodiles/' + color + '_body.svg'
-               }),
-      h('img', { class: 'jaw',
-                 onClick: changeColor(term.id),
-                 src: 'img/crocodiles/' + color + '_jaws.svg'
-               }),
-      h(
-        'img',
-        { class: 'delete',
-          src: 'img/delete_button.svg',
-          onClick: deleteEntry(term.id),
-        },
-      )
-    ]);
-};
-
 const changeColor = id => overState(state => {
   state.swamp = changeColorAt(state.swamp, id);
   return state;
@@ -199,21 +170,36 @@ const back = appstate => {
 const renderTerm = (binders, term) => {
 
   const mkClassName = cn => {
+    // Subfamily that is going to be eaten.
     if (term.eaten) {
       cn += ' eaten';
     }
-    if (term.marked) {
+
+    // Alligator that is going to eat.
+    if (term.marked && cn != 'crocodile') {
       cn += ' marked';
     }
+
+    // Eggs that are going to hatch.
+    if (term.rotated) {
+      cn += ' rotated';
+    }
+
+    // Newly hatched subfamilies.
+    if (term.fresh) {
+      cn += ' fresh';
+    }
+
     return cn;
   };
 
+  /* Render eggs */
   if (term instanceof Var) {
     let color = colors[term.color];
 
     return h(
       'div',
-      { class: 'egg' }, [
+      {}, [
         h('img', { class: mkClassName('egg'),
                    onClick: changeColor(term.id),
                    src: 'img/crocodiles/' + color + '_egg.svg' }),
@@ -227,6 +213,7 @@ const renderTerm = (binders, term) => {
       ]);
   }
 
+  /* Render application */
   if (term instanceof App) {
     if (term.left instanceof Lam) {
       return h(
@@ -276,8 +263,39 @@ const renderTerm = (binders, term) => {
     }
   }
 
+
   if (term instanceof Lam) {
-    return h('div', { class: 'crocodile' + (term.eaten ? ' eaten' : '')}, [
+
+    const renderCrocodile = (term) => {
+      let color = colors[term.color];
+      let className = 'croco-container';
+
+      if (term.marked) {
+        className += ' marked';
+      }
+
+      return h(
+        'div', { class: className }, [
+
+          h('img', { class: 'croco',
+                     onClick: changeColor(term.id),
+                     src: 'img/crocodiles/' + color + '_body.svg'
+                   }),
+          h('img', { class: 'jaw',
+                     onClick: changeColor(term.id),
+                     src: 'img/crocodiles/' + color + '_jaws.svg'
+                   }),
+          h(
+            'img',
+            { class: 'delete',
+              src: 'img/delete_button.svg',
+              onClick: deleteEntry(term.id),
+            },
+          )
+        ]);
+    };
+
+    return h('div', { class: mkClassName('crocodile') }, [
       renderCrocodile(term),
       renderTerm(binders.concat([term.name]), term.expr) // wtf is name?
     ]);
