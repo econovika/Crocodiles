@@ -12,9 +12,9 @@
    version="1.1"
    id="svg28845"
    xml:space="preserve"
-   width="187.37289"
-   height="127.80508"
-   viewBox="0 0 187.37289 127.80508"
+   width="125.63084"
+   height="84.445572"
+   viewBox="0 0 125.63084 84.445574"
    sodipodi:docname="blue_egg.svg"
    inkscape:version="0.92.4 (unknown)"><metadata
      id="metadata28851"><rdf:RDF><cc:Work
@@ -58,8 +58,8 @@
      fit-margin-right="0"
      fit-margin-bottom="0"
      inkscape:zoom="5.6568543"
-     inkscape:cx="106.87651"
-     inkscape:cy="72.980622"
+     inkscape:cx="71.513744"
+     inkscape:cy="28.029215"
      inkscape:window-x="65"
      inkscape:window-y="24"
      inkscape:window-maximized="1"
@@ -67,7 +67,7 @@
      id="g28853"
      inkscape:groupmode="layer"
      inkscape:label="alligators_colored"
-     transform="matrix(1.3333333,0,0,-1.3333333,-140.38983,432.91527)"><g
+     transform="matrix(1.3333333,0,0,-1.3333333,-175.7526,407.98337)"><g
        id="g28855"
        transform="scale(1,-1)"
        clip-path="url(#clipPath29403)"><path
@@ -1148,7 +1148,7 @@
          id="path29984"
          inkscape:connector-curvature="0"
          sodipodi:nodetypes="cssssscsssssssssccsssscccsccccscsc" /><ellipse
-         style="opacity:1;fill:#f9f9f9;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:6.38533354;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
+         style="opacity:1;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:6.38533354;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
          id="path29990"
          cx="-198.70248"
          cy="-297.21558"
