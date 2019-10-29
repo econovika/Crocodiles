@@ -14,7 +14,7 @@ const {
 const { h, app } = require('hyperapp');
 const { Debounce } = require('hyperapp-fx');
 const L = require('partial.lenses');
-// const deepcopy = require('deepcopy'); // do not use it!
+
 const MENU = 'menu';
 const MAIN = 'main';
 const CHAPTERS = 'chapters';
@@ -286,7 +286,14 @@ const renderChapters = state => h(
   )
 );
 
-document.addEventListener('DOMContentLoaded', () => {
+window.onload = () => {
+
+  const bg = document.querySelector('#alternative-bg');
+  bg.style.opacity = 0;
+  setTimeout(() => {
+    bg.remove();
+  }, 5000);
+
   app({
     // Startup state
     init: { state: { mode: MENU,
@@ -308,27 +315,33 @@ document.addEventListener('DOMContentLoaded', () => {
       if (state.mode == MENU) {
 
         mainView = h(
-          'div', { class: 'bg_menu', id: 'menu-buttons' },
-          h(
-            'div', { id: 'button-container' },
-            [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
-              mode => h(
-                'div',
-                { class: 'container-select',
-                  id: 'button-' + mode,
-                  onClick: modeSetter(mode)
-                }
+          'div', { class: 'bg_menu', id: 'menu-buttons' }, [
+            h(
+              'div', { id: 'button-container' },
+              [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
+                mode => h(
+                  'div',
+                  { class: 'container-select',
+                    id: 'button-' + mode,
+                    onClick: modeSetter(mode)
+                  }
+                )
               )
             )
-          )
+          ]
         );
       }
 
       else if (state.mode == MAIN) {
         mainView = renderSwamp(state);
-      }
-      else {
-        mainView = h( 'div', { class: 'bg_menu' });
+      } else if (state.mode == CHAPTERS) {
+        mainView = h('div', { class: 'bg_menu' }, [
+          h('div', { class: 'chapters' }, chapters.map(chapter => {
+
+          }))
+        ]);
+      } else {
+        mainView = h('div', { class: 'bg_menu' });
       }
 
       if (state.mode == SCORE) {
@@ -366,4 +379,4 @@ document.addEventListener('DOMContentLoaded', () => {
     },
     node: document.getElementById('app')
   });
-});
+};

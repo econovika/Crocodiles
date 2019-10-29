@@ -1,6 +1,11 @@
 body {
     margin: 0;
     padding: 0;
+    background-image: url("../img/croco_sky.svg");
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-attachment: fixed;
 }
 
 .bg_menu {
@@ -14,7 +19,7 @@ body {
     text-align: center;
 }
 
-.bg_play {
+.bg_play, #alternative-bg {
     background-image: url("../img/croco_sky_blur.svg");
     background-position: center;
     background-repeat: no-repeat;
@@ -23,6 +28,14 @@ body {
     text-align: center;
 }
 
+#alternative-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    transition: all 5s ease-out;
+}
 
 #app {
     /*background-image: url("../img/croco_sky.svg");*/
