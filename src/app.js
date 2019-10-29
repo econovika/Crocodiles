@@ -250,7 +250,13 @@ const renderTerm = (term, depth = 0) => {
       { class: mkClassName('egg') }, [
         h('img', { onClick: changeColor(term.id, decrement),
                    class: 'egg-image',
-                   src: 'img/crocodiles/' + color + '_egg.svg' }),
+                   src: (
+                     'img/crocodiles/' +
+                       color + '_' +
+                       (term.rotated ? 'egg2' : 'egg') +
+                       '.svg'
+                   )}),
+
         h(
           'img',
           { class: 'delete',
