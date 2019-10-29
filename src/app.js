@@ -5,6 +5,7 @@ const {
   Lam,
   Placeholder,
   insertIntoPlaceholder,
+  changeColorAt,
   make_reduction_step,
   deep_copy,
 } = require('./lambda.js');
@@ -18,6 +19,7 @@ const CHAPTERS = 'chapters';
 const SCORE = 'score';
 const SETTINGS = 'settings';
 const chapters = require('./chapters');
+const colors = require('./colors');
 
 const overState = f => appstate =>
       L.set(
@@ -113,24 +115,31 @@ const renderPlaceholder = placeholder =>
         ]
        );
 
-const renderCrocodile = name =>
-      h('div', { class: 'croco-container' }, [
-        h('img', { class: 'croco', src: 'img/crocodiles/blue_body.svg' }),
-        h('img', { class: 'jaw', src: 'img/crocodiles/blue_jaws.svg' }),
+const renderCrocodile = (term) => {
+  let color = colors[term.color];
+  return h(
+    'div', { class: 'croco-container' }, [
+
+      h('img', { class: 'croco',
+                 onClick: changeColor(term.id),
+                 src: 'img/crocodiles/' + color + '_body.svg'
+               }),
+      h('img', { class: 'jaw',
+                 onClick: changeColor(term.id),
+                 src: 'img/crocodiles/' + color + '_jaws.svg'
+               }),
         h(
           'div',
-          { class: 'delete', onClick: deleteCrocodile(name) },
+          { class: 'delete' },
           ''
         )
       ]);
-
-const changeEggColor = appstate => {
-  return appstate;
 };
 
-const changeCrocodileColor = appstate => {
-  return appstate;
-};
+const changeColor = id => overState(state => {
+  state.swamp = changeColorAt(state.swamp, id);
+  return state;
+});
 
 const forward = overState(state => {
   const newState = deep_copy_state(state);
@@ -158,12 +167,13 @@ const back = appstate => {
 const renderTerm = (binders, term) => {
 
   if (term instanceof Var) {
+    let color = colors[term.color];
     return h(
       'div',
       { class: 'egg' }, [
         h('img', { class: 'egg',
-                   onClick: changeEggColor,
-                   src: 'img/crocodiles/blue_egg.svg' }),
+                   onClick: changeColor(term.id),
+                   src: 'img/crocodiles/' + color + '_egg.svg' }),
       ]);
   }
 
@@ -185,19 +195,19 @@ const renderTerm = (binders, term) => {
         ]);
     } else {
       return h(
-        'div',
-        { class: 'row' }, [
+        'table',
+        { class: 'row' }, h('tr', {}, [
           h(
-            'div',
+            'td',
             { class: 'left' },
             renderTerm(binders, term.left)
           ),
           h(
-            'div',
+            'td',
             { class: 'right' },
             renderTerm(binders, term.right)
           )
-        ]
+        ])
       );
     }
   }
@@ -224,7 +234,6 @@ const renderScore = state => {
 
 const selectChapter = ix => overState(state => {
   state.chapter = ix;
-  console.log(state);
   state.goal = state.chapters[ix].goal;
   state.input = state.chapters[ix].input;
   state.swamp = new Placeholder();
@@ -257,7 +266,6 @@ document.addEventListener('DOMContentLoaded', () => {
     view: appstate => {
       const state = appstate.state;
 
-      console.log(state);
       let mainView = [];
 
       if (state.mode == MENU) {
