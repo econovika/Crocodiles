@@ -124,9 +124,12 @@ function changeColorAt (expr, id) {
   return expr;
 }
 
-function insertIntoPlaceholder (placeholderId, expr, newExpr) {
+function mapAt (id, expr, f) {
 
   function go(expr, depth) {
+    if (expr.id == id) {
+      return f(expr, depth);
+    }
 
     if (expr instanceof Var) {
       return expr;
@@ -144,20 +147,33 @@ function insertIntoPlaceholder (placeholderId, expr, newExpr) {
     }
 
     if (expr instanceof Placeholder) {
-      if (placeholderId == expr.id) {
-        newExpr = deep_copy(newExpr);
-        newExpr.color = depth;
-        return newExpr;
-      } else {
-        return expr;
-      }
+      return expr;
     }
 
-    throw "insertIntoPlaceholder: no match";
+    throw "mapAt: no match";
   };
 
   return go(expr, 0);
 }
+
+const replaceWithPlaceholder = (id, expr) => {
+  return mapAt(id, expr, (old, depth) => {
+    console.log('replacing');
+    return new Placeholder();
+  });
+};
+
+const insertIntoPlaceholder = (id, expr, target) => {
+  return mapAt(id, expr, (ph, depth) => {
+    const newExpr = deep_copy(target);
+    newExpr.color = depth - 1;
+    if (newExpr.color < 0) {
+      newExpr.color = 0;
+    }
+    return newExpr;
+  });
+};
+
 
 // replace vars of color 'color' with 'what' in 'expr';
 function make_substitution(expr, what, color) {
@@ -343,4 +359,5 @@ module.exports = {
   make_substitution,
   get_all_colors,
   markRedex,
+  replaceWithPlaceholder,
 }

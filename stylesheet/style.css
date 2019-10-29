@@ -72,7 +72,7 @@ body {
     transform: translateY(4px);
 }
 
-.button{
+.button {
     position: fixed;
     bottom: 0;
     margin: 20px;
@@ -124,12 +124,8 @@ body {
     margin: 0 auto;
 }
 
-.left {
-    /* float: left; */
-}
-
-.right {
-    /* float: right; */
+.row-container {
+    position: relative;
 }
 
 #swamp {
@@ -141,16 +137,20 @@ body {
 
 .croco {
     cursor: pointer;
-    /* width: 100px;
-    height: 70px;*/
 }
 
 .croco-container {
     display: table;
     margin: 0 auto;
     white-space: nowrap;
+    position: relative;
 }
 
+.croco-container:hover > .delete,
+.egg:hover > .delete,
+.row-container:hover > .delete {
+    visibility: visible;
+}
 
 .crocodile {
     display: table;
@@ -199,6 +199,7 @@ body {
     margin: 0 auto;
     width: 130px;
     height: 130px;
+    position: relative;
 }
 
 .egg, .col, .row, .croco-container, .crocodile {
@@ -295,10 +296,25 @@ body {
     color: white;
     font-size: 30px;
     cursor: pointer;
-    margin: 10px;
     border-radius: 10px;
+    max-width: 50%;
+    margin: 10px auto;
 }
 
 .chapter-title {
     font-weight: bold;
+}
+
+#swamp-container {
+    margin-top: 2%;
+}
+
+.delete {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    position: absolute;
+    visibility: hidden;
+    top: 0;
+    right: 100px;
 }

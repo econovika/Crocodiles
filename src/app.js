@@ -9,6 +9,7 @@ const {
   make_reduction_step,
   deep_copy,
   markRedex,
+  replaceWithPlaceholder,
 } = require('./lambda.js');
 
 const { h, app } = require('hyperapp');
@@ -45,10 +46,6 @@ const deep_copy_state = state => {
 
   return obj;
 };
-
-const deleteCrocodile = name => overState(state => {
-  return deep_copy_state(state);
-});
 
 const insertCrocodile = placeholder => overState(state => {
   state.swamp = insertIntoPlaceholder(
@@ -115,6 +112,11 @@ const renderPlaceholder = placeholder =>
         ]
        );
 
+const deleteEntry = id => overState(state => {
+  state.swamp = deep_copy(replaceWithPlaceholder(id, state.swamp));
+  return Object.assign({}, state);
+});
+
 const renderCrocodile = (term) => {
   let color = colors[term.color];
   let className = 'croco-container';
@@ -134,12 +136,14 @@ const renderCrocodile = (term) => {
                  onClick: changeColor(term.id),
                  src: 'img/crocodiles/' + color + '_jaws.svg'
                }),
-        h(
-          'div',
-          { class: 'delete' },
-          ''
-        )
-      ]);
+      h(
+        'img',
+        { class: 'delete',
+          src: 'img/delete_button.svg',
+          onClick: deleteEntry(term.id),
+        },
+      )
+    ]);
 };
 
 const changeColor = id => overState(state => {
@@ -213,6 +217,13 @@ const renderTerm = (binders, term) => {
         h('img', { class: mkClassName('egg'),
                    onClick: changeColor(term.id),
                    src: 'img/crocodiles/' + color + '_egg.svg' }),
+        h(
+          'img',
+          { class: 'delete',
+            src: 'img/delete_button.svg',
+            onClick: deleteEntry(term.id),
+          },
+        )
       ]);
   }
 
@@ -233,9 +244,17 @@ const renderTerm = (binders, term) => {
           )
         ]);
     } else {
+      const deleter = h(
+        'img',
+        { class: 'delete',
+          src: 'img/delete_button.svg',
+          onClick: deleteEntry(term.id),
+        },
+      );
+
       return h(
         'table',
-        { class: mkClassName('row') }, h('tr', {}, [
+        { class: mkClassName('row') }, h('tr', { class: 'row-container' }, [
           h(
             'td',
             { class: 'left' },
@@ -246,7 +265,11 @@ const renderTerm = (binders, term) => {
             { class: 'right' },
             renderTerm(binders, term.right)
           )
-        ])
+        ].concat(
+          (term.left instanceof Placeholder &&
+           term.right instanceof Placeholder) ?
+            [ deleter ] : []
+        ))
       );
     }
   }
@@ -265,7 +288,9 @@ const renderTerm = (binders, term) => {
   throw new Error('Not a term');
 };
 
-const renderSwamp = state => h('div', { class: 'bg_play', id: 'swamp' }, renderTerm([], state.swamp));
+const renderSwamp = state => h('div', { class: 'bg_play', id: 'swamp' },
+                               h('div', { id: 'swamp-container' },
+                                 renderTerm([], state.swamp)));
 
 const renderScore = state => {
   return h('div', { class: 'bg_play', id: 'swamp' }, []); // <--- SCORE
@@ -318,7 +343,7 @@ window.onload = () => {
         mainView = h(
           'div', { class: 'bg_menu', id: 'menu-buttons' }, [
             h(
-              'div', { id: 'button-container' },
+              'div', { class: 'menu-button', id: 'button-container' },
               [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
                 mode => h(
                   'div',

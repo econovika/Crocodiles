@@ -16,7 +16,7 @@ module.exports = [
     description: 'Reduces to itself',
     term: new App(
       new Lam(new App(new Var(0), new Var(0)), 0),
-      new Lam(new App(new Var(1), new Var(1)), 1)
+      new Lam(new App(new Var(3), new Var(3)), 3)
     )
   }
 ];
