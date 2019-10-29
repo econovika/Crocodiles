@@ -199,9 +199,9 @@ const renderTerm = (binders, term) => {
 
     return h(
       'div',
-      {}, [
-        h('img', { class: mkClassName('egg'),
-                   onClick: changeColor(term.id),
+      { class: mkClassName('egg') }, [
+        h('img', { onClick: changeColor(term.id),
+                   class: 'egg-image',
                    src: 'img/crocodiles/' + color + '_egg.svg' }),
         h(
           'img',
@@ -318,7 +318,7 @@ const renderScore = state => {
 
 const selectChapter = ix => overState(state => {
   state.chapter = ix;
-  state.swamp = state.chapters[ix].term;
+  state.swamp = deep_copy(state.chapters[ix].term);
   state.mode = MAIN;
   return Object.assign({}, state);
 });
