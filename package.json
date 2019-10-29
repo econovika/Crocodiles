@@ -22,6 +22,7 @@
   "devDependencies": {
     "deepcopy": "^2.0.0",
     "hyperapp": "^2.0.3",
+    "hyperapp-fx": "^2.0.0-beta.1",
     "parcel": "^1.12.4",
     "partial.lenses": "^14.17.0"
   }

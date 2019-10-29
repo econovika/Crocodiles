@@ -195,6 +195,35 @@ function make_substitution(expr, what, color) {
   return substitution(expr);
 }
 
+function markRedex(expr) {
+  if (expr instanceof Var) {
+    return null;
+  }
+
+  if (expr instanceof Lam) {
+    return markRedex(expr.expr);
+  }
+
+  if (expr instanceof App) {
+    if (expr.left instanceof Lam) {
+      expr.left = deep_copy(expr.left);
+      expr.left.marked = true;
+      expr.right = deep_copy(expr.right);
+      expr.right.eaten = true;
+      console.log('marked');
+      return true;
+    } else {
+      return markRedex(expr.left) || markRedex(expr.right);
+    }
+  }
+
+  if (expr instanceof Placeholder) {
+    return null;
+  }
+
+  throw new Error("findRedex: no match");
+}
+
 function make_reduction_step(expr) {
   if (expr instanceof Var) {
     return null;
@@ -313,4 +342,5 @@ module.exports = {
   get_colors_for_placeholder,
   make_substitution,
   get_all_colors,
+  markRedex,
 }

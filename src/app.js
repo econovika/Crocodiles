@@ -8,9 +8,11 @@ const {
   changeColorAt,
   make_reduction_step,
   deep_copy,
+  markRedex,
 } = require('./lambda.js');
 
 const { h, app } = require('hyperapp');
+const { Debounce } = require('hyperapp-fx');
 const L = require('partial.lenses');
 // const deepcopy = require('deepcopy'); // do not use it!
 const MENU = 'menu';
@@ -34,14 +36,12 @@ const modeSetter = mode => overState(state => L.set('mode', mode, state));
 
 const deep_copy_state = state => {
 
-  const obj = {
-    mode: state.mode,
-    chapter: state.chapter,
-    chapters: state.chapters,
-    swamp: deep_copy(state.swamp),
-    goal: deep_copy(state.goal),
-    input: deep_copy(state.input),
-  };
+  const obj = Object.assign({}, state);
+
+  obj.swamp = deep_copy(obj.swamp);
+  obj.goal = deep_copy(obj.goal);
+  obj.input = deep_copy(obj.input);
+  obj.backButtonHidden = false;
 
   return obj;
 };
@@ -117,8 +117,14 @@ const renderPlaceholder = placeholder =>
 
 const renderCrocodile = (term) => {
   let color = colors[term.color];
+  let className = 'croco-container';
+
+  if (term.marked) {
+    className += ' marked';
+  }
+
   return h(
-    'div', { class: 'croco-container' }, [
+    'div', { class: className }, [
 
       h('img', { class: 'croco',
                  onClick: changeColor(term.id),
@@ -148,8 +154,27 @@ const forward = overState(state => {
     return state;
   }
   newState.swamp = new_swamp;
+  newState.backButtonHidden = false;
   return newState;
 });
+
+const previewForward = appstate => {
+  const newSwamp = deep_copy(appstate.state.swamp);
+  markRedex(newSwamp);
+  console.log('pf');
+  appstate.state = Object.assign({}, appstate.state);
+  appstate.state.swamp = newSwamp;
+  appstate.state.backButtonHidden = true;
+  return Object.assign({}, appstate);
+};
+
+const debouncedForward = state => [
+  previewForward(state),
+  Debounce({
+    wait: 1000,
+    action: forward
+  })
+];
 
 const back = appstate => {
   const last = (appstate.history || []).slice(-1)[0];
@@ -166,12 +191,23 @@ const back = appstate => {
 
 const renderTerm = (binders, term) => {
 
+  const mkClassName = cn => {
+    if (term.eaten) {
+      cn += ' eaten';
+    }
+    if (term.marked) {
+      cn += ' marked';
+    }
+    return cn;
+  };
+
   if (term instanceof Var) {
     let color = colors[term.color];
+
     return h(
       'div',
       { class: 'egg' }, [
-        h('img', { class: 'egg',
+        h('img', { class: mkClassName('egg'),
                    onClick: changeColor(term.id),
                    src: 'img/crocodiles/' + color + '_egg.svg' }),
       ]);
@@ -181,7 +217,7 @@ const renderTerm = (binders, term) => {
     if (term.left instanceof Lam) {
       return h(
         'div',
-        { class: 'col' },
+        { class: mkClassName('col') },
         [ h(
           'div',
           { },
@@ -196,7 +232,7 @@ const renderTerm = (binders, term) => {
     } else {
       return h(
         'table',
-        { class: 'row' }, h('tr', {}, [
+        { class: mkClassName('row') }, h('tr', {}, [
           h(
             'td',
             { class: 'left' },
@@ -213,7 +249,7 @@ const renderTerm = (binders, term) => {
   }
 
   if (term instanceof Lam) {
-    return h('div', { class: 'crocodile' }, [
+    return h('div', { class: 'crocodile' + (term.eaten ? ' eaten' : '')}, [
       renderCrocodile(term),
       renderTerm(binders.concat([term.name]), term.expr) // wtf is name?
     ]);
@@ -257,6 +293,7 @@ document.addEventListener('DOMContentLoaded', () => {
                      chapter: 0,
                      chapters: chapters,
                      swamp: new Placeholder(),
+                     backButtonHidden: false,
                      input: new Var(0),
                      goal: new Var(0),
                    },
@@ -308,14 +345,14 @@ document.addEventListener('DOMContentLoaded', () => {
                )
             ]
           ).concat(
-            state.mode == MAIN ? [
+            state.mode == MAIN && !state.backButtonHidden ? [
               h('div', { class: 'button',
                          id: 'button-back',
                          onClick: back
                        }),
               h('div', { class: 'button',
                          id: 'button-forward',
-                         onClick: forward
+                         onClick: debouncedForward
                        }),
             ] : []
           )

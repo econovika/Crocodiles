@@ -126,11 +126,18 @@ body {
     margin: 0 auto;
 }
 
+.croco {
+    cursor: pointer;
+    /* width: 100px;
+    height: 70px;*/
+}
+
 .croco-container {
     display: table;
     margin: 0 auto;
     white-space: nowrap;
 }
+
 
 .crocodile {
     display: table;
@@ -146,6 +153,34 @@ body {
     border-color: #999;
 }
 
+.marked {
+    transform: scale(1.8) rotate(25deg) translateX(120px) translateY(-70px);
+    z-index: 20;
+}
+
+.eaten {
+    transform: scale(0.8);
+    animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+}
+
+@keyframes shake {
+  10%, 45%, 65%, 85%, 90% {
+    transform: translate3d(-1px, 0, 0);
+  }
+
+  20%, 15%, 55%, 30%, 80% {
+    transform: translate3d(2px, 0, 0);
+  }
+
+  30%, 50%, 70% {
+    transform: translate3d(-4px, 0, 0);
+  }
+
+  40%, 95%, 25%, 75%, 60% {
+    transform: translate3d(4px, 0, 0);
+  }
+}
+
 .egg {
     cursor: pointer;
     margin: 0 auto;
@@ -153,10 +188,8 @@ body {
     height: 130px;
 }
 
-.croco {
-    cursor: pointer;
-    /* width: 100px;
-    height: 70px;*/
+.egg, .col, .row, .croco-container, .crocodile {
+    transition: all 1s ease-out;
 }
 
 .insert-crocodile, .insert-egg, .insert-placeholders {
