@@ -211,7 +211,7 @@ const renderTerm = (binders, term) => {
   throw new Error('Not a term');
 };
 
-const renderSwamp = state => h('div', { id: 'swamp' }, renderTerm([], state.swamp));
+const renderSwamp = state => h('div', { class: 'bg_play', id: 'swamp' }, renderTerm([], state.swamp));
 
 const renderScore = state => {
 
@@ -257,8 +257,9 @@ document.addEventListener('DOMContentLoaded', () => {
       let mainView = [];
 
       if (state.mode == MENU) {
+
         mainView = h(
-          'div', { id: 'menu-buttons' },
+          'div', { class: 'bg_menu', id: 'menu-buttons' },
           [ MAIN, CHAPTERS, SCORE, SETTINGS ].map(
             mode => h(
               'div',
@@ -270,9 +271,11 @@ document.addEventListener('DOMContentLoaded', () => {
           )
         );
       }
-
-      if (state.mode == MAIN) {
+      else if (state.mode == MAIN) {
         mainView = renderSwamp(state);
+      }
+      else {
+        mainView = h( 'div', {class: 'bg_menu'})
       }
 
       if (state.mode == SCORE) {
@@ -282,7 +285,7 @@ document.addEventListener('DOMContentLoaded', () => {
       return h('div', {}, [
         h(
           'div',
-          { id: 'toolbar' },
+          { id: 'toolbar'},
           [].concat(
             state.mode == MENU ? [] : [
               h('div', { class: 'container-menu',

@@ -10,9 +10,9 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="48.69846mm"
-   height="59.085537mm"
-   viewBox="0 0 48.698459 59.085537"
+   width="43.726196mm"
+   height="49.952572mm"
+   viewBox="0 0 43.726196 49.952572"
    version="1.1"
    id="svg7496"
    sodipodi:docname="back_button.svg"
@@ -225,10 +225,10 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="1.4142136"
-     inkscape:cx="-127.28328"
-     inkscape:cy="-11.716804"
+     inkscape:cx="-135.81196"
+     inkscape:cy="-46.235083"
      inkscape:document-units="px"
-     inkscape:current-layer="layer2"
+     inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:snap-nodes="true"
      inkscape:snap-bbox="true"
@@ -261,7 +261,7 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-29.135663,-36.803622)">
+     transform="translate(-31.39221,-36.803626)">
     <rect
        style="opacity:0.84200003;fill:#006100;fill-opacity:1;stroke:#0f2904;stroke-width:2.95000005;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
        id="rect9548"
@@ -357,7 +357,7 @@
      inkscape:groupmode="layer"
      id="layer2"
      inkscape:label="Layer 2"
-     transform="translate(-29.135663,-36.803622)">
+     transform="translate(-31.39221,-36.803626)">
     <text
        xml:space="preserve"
        style="font-style:normal;font-weight:normal;font-size:10.58333302px;line-height:1.25;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
