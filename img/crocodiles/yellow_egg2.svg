@@ -1178,7 +1178,12 @@
          cy="-297.21558"
          rx="5.5944366"
          ry="8.0002632"
-         transform="matrix(0.57236686,0.81999767,-0.91847202,0.39548596,0,0)" /></g><rect
+         transform="matrix(0.57236686,0.81999767,-0.91847202,0.39548596,0,0)" /><path
+         style="fill:none;stroke:#231f20;stroke-width:2.25;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+         d="m 185.58632,-244.26539 c -1.91369,-5.81137 -3.5229,-11.6435 -5.27079,-17.43565 l 20.73322,3.02677 -7.49737,-11.6815 11.18627,1.90765 -0.53871,-8.11424"
+         id="path3240"
+         inkscape:connector-curvature="0"
+         sodipodi:nodetypes="cccccc" /></g><rect
        style="opacity:1;fill:#800080;fill-opacity:0;fill-rule:nonzero;stroke:none;stroke-width:6.60000038;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;paint-order:stroke fill markers"
        id="rect29395"
        width="145.98306"

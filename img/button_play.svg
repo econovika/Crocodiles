@@ -228,7 +228,7 @@
      inkscape:cx="190.58615"
      inkscape:cy="94.678564"
      inkscape:document-units="px"
-     inkscape:current-layer="layer1"
+     inkscape:current-layer="text11564-9"
      showgrid="false"
      inkscape:snap-nodes="true"
      inkscape:snap-bbox="true"
@@ -253,7 +253,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -341,18 +341,28 @@
      id="layer2"
      inkscape:label="Layer 2"
      transform="translate(-28.1203,-34.910414)">
-    <text
+    <g
+       aria-label="Play"
        transform="translate(-0.63648513,-2.2628414)"
-       xml:space="preserve"
+       clip-path="url(#clipPath11717-9)"
        style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:28.22222328px;line-height:2.25;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';text-align:center;letter-spacing:0px;word-spacing:0px;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="98.23764"
-       y="65.423538"
-       id="text11564-9"
-       clip-path="url(#clipPath11717-9)"><tspan
-         sodipodi:role="line"
-         id="tspan11562-3"
-         x="98.23764"
-         y="65.423538"
-         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.93055534px;line-height:2.25;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';text-align:center;baseline-shift:baseline;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332">Play</tspan></text>
+       id="text11564-9">
+      <path
+         d="m 79.606564,49.882713 v 7.121012 h 2.261705 q 0.727777,0 1.365981,-0.279914 0.6494,-0.279914 1.130852,-0.761366 0.492649,-0.481452 0.772563,-1.130853 0.29111,-0.6494 0.29111,-1.388373 0,-0.75017 -0.29111,-1.39957 -0.279914,-0.649401 -0.772563,-1.130853 -0.481452,-0.481452 -1.130852,-0.750169 -0.649401,-0.279914 -1.365981,-0.279914 z m -2.373671,14.35399 V 48.695877 q 0,-0.246324 0.08957,-0.459059 0.08957,-0.223931 0.246324,-0.380683 0.167949,-0.167948 0.380683,-0.257521 0.212735,-0.08957 0.470256,-0.08957 h 3.44854 q 0.806153,0 1.556322,0.212734 0.761366,0.212735 1.421963,0.604615 0.660597,0.391879 1.209229,0.940511 0.548631,0.537435 0.929314,1.198032 0.39188,0.660597 0.604615,1.421963 0.223931,0.750169 0.223931,1.556322 0,2.44085 -1.75786,4.19871 -1.735467,1.735467 -4.187514,1.735467 h -2.261705 v 4.859307 q 0,0.492648 -0.347093,0.839742 -0.347094,0.347093 -0.839742,0.347093 -0.492649,0 -0.839742,-0.347093 -0.347094,-0.347094 -0.347094,-0.839742 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.93055534px;line-height:2.25;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+         id="path1104" />
+      <path
+         d="M 89.280392,64.259096 V 48.684681 q 0,-0.492649 0.324701,-0.828546 0.335896,-0.347093 0.839742,-0.347093 0.503845,0 0.828545,0.347093 0.335897,0.335897 0.335897,0.828546 v 14.398776 h 0.537435 q 0.481452,0 0.817349,0.347093 0.347093,0.335897 0.347093,0.828546 0,0.481452 -0.347093,0.828545 -0.335897,0.335897 -0.817349,0.335897 h -1.713074 q -0.481452,0 -0.817349,-0.335897 -0.335897,-0.347093 -0.335897,-0.828545 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.93055534px;line-height:2.25;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+         id="path1106" />
+      <path
+         d="m 101.03678,55.223472 q -0.82854,0 -1.545124,0.313504 -0.71658,0.313503 -1.242818,0.850938 -0.526239,0.526238 -0.839742,1.242818 -0.302307,0.71658 -0.302307,1.522732 0,0.806153 0.302307,1.522733 0.313503,0.71658 0.839742,1.254014 0.526238,0.526239 1.242818,0.839742 0.716584,0.313504 1.545124,0.313504 0.81735,0 1.53393,-0.313504 0.71658,-0.313503 1.24282,-0.850938 0.53743,-0.537435 0.83974,-1.242818 0.3135,-0.71658 0.3135,-1.522733 0,-0.806152 -0.3135,-1.511535 -0.30231,-0.71658 -0.83974,-1.254015 -0.52624,-0.537435 -1.24282,-0.850938 -0.71658,-0.313504 -1.53393,-0.313504 z m 3.92999,9.035624 v -0.223931 q -0.83974,0.671793 -1.82504,1.030083 -0.98529,0.35829 -2.10495,0.35829 -2.597601,0 -4.433837,-1.836236 -1.836235,-1.836236 -1.836235,-4.433838 0,-2.597601 1.836235,-4.433837 1.836236,-1.836236 4.433837,-1.836236 2.57521,0 4.43384,1.836236 1.83623,1.836236 1.83623,4.433837 v 5.105632 q 0,0.481452 -0.34709,0.828545 -0.3359,0.335897 -0.81735,0.335897 -0.49265,0 -0.83974,-0.335897 -0.3359,-0.347093 -0.3359,-0.828545 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.93055534px;line-height:2.25;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+         id="path1108" />
+      <path
+         d="m 112.54685,64.259096 -4.03077,-9.685025 q -0.11196,-0.257521 -0.11196,-0.526238 0,-0.235128 0.0896,-0.447862 0.0896,-0.212735 0.24632,-0.369487 0.15676,-0.167948 0.36949,-0.257521 0.21274,-0.08957 0.45906,-0.08957 0.34709,0 0.6494,0.201538 0.30231,0.190341 0.45906,0.571024 l 3.14623,7.512892 3.14624,-7.535285 q 0.13436,-0.335897 0.38068,-0.537435 0.25752,-0.212734 0.71658,-0.212734 0.24632,0 0.45906,0.08957 0.21273,0.08957 0.36948,0.257521 0.15676,0.156752 0.24633,0.369487 0.10077,0.212734 0.10077,0.447862 0,0.246324 -0.12316,0.526238 l -6.43803,15.440057 q -0.14555,0.347093 -0.44786,0.559828 -0.30231,0.223931 -0.6606,0.223931 -0.50384,0 -0.83974,-0.335897 -0.3247,-0.335896 -0.3247,-0.839742 0,-0.268717 0.11197,-0.515041 z"
+         style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:22.93055534px;line-height:2.25;font-family:Comfortaa;-inkscape-font-specification:'Comfortaa Bold';text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke-width:0.26458332"
+         id="path1110" />
+    </g>
   </g>
 </svg>

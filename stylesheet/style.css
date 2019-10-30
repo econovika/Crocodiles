@@ -17,6 +17,7 @@ body {
     background-size: cover;
     background-attachment: fixed;
     text-align: center;
+    position: fixed;
 }
 
 .bg_play, #alternative-bg {
@@ -34,7 +35,7 @@ body {
     left: 0;
     right: 0;
     bottom: 0;
-    transition: all 5s ease-out;
+    transition: all 3s ease;
 }
 
 #app {
@@ -73,6 +74,7 @@ body {
 }
 
 .button {
+    z-index: 100;
     position: fixed;
     bottom: 0;
     margin: 20px;
@@ -102,12 +104,19 @@ body {
 }
 
 .jaw {
+    cursor: pointer;
     animation-name: moving;
     animation-duration: 0.92s;
     animation-iteration-count: infinite;
     position: relative;
     left: -150px;
     top: -30px;
+}
+
+.croco-container.attacking > .jaw {
+    animation: none;
+    transform: rotate(35deg) /*ranslateX(30px)*/;
+    transform-origin: 20px 20px;
 }
 
 .col {
@@ -126,6 +135,7 @@ body {
 
 .row-container {
     position: relative;
+    display: inline-block;
 }
 
 #swamp {
@@ -166,32 +176,28 @@ body {
     border-color: #999;
 }
 
-.marked {
+.attacking {
     transform: scale(1.8) rotate(25deg) translateX(120px) translateY(-70px);
     z-index: 20;
 }
 
 .eaten {
-    transform: scale(0.8);
-    animation: shake 1s cubic-bezier(.36,.07,.19,.97) both;
+    animation-name: eaten;
+    animation-duration: 1s;
+    animation-timing-function: ease-in;
 }
 
-@keyframes shake {
-  10%, 45%, 65%, 85%, 90% {
-    transform: translate3d(-1px, 0, 0);
-  }
+.rotated {
+    transform: rotate(90deg);
+}
 
-  20%, 15%, 55%, 30%, 80% {
-    transform: translate3d(2px, 0, 0);
-  }
-
-  30%, 50%, 70% {
-    transform: translate3d(-4px, 0, 0);
-  }
-
-  40%, 95%, 25%, 75%, 60% {
-    transform: translate3d(4px, 0, 0);
-  }
+@keyframes eaten {
+    0% {
+        transform: scale(1);
+    }
+    100% {
+        transform: scale(0);
+    }
 }
 
 .egg {
@@ -202,12 +208,18 @@ body {
     position: relative;
 }
 
+.egg-image {
+    width: 130px;
+    height: 130px;
+}
+
 .egg, .col, .row, .croco-container, .crocodile {
     transition: all 1s ease-out;
 }
 
 .insert-crocodile, .insert-egg, .insert-placeholders {
     display: none;
+    position: relative;
 }
 
 .insert-placeholders-preview {
@@ -232,6 +244,14 @@ body {
 
 .insert-crocodile-img {
     width: 60px;
+    cursor: pointer;
+}
+
+.insert-crocodile-jaws {
+    width: 20px;
+    top: 16px;
+    right: 36px;
+    position: absolute;
     cursor: pointer;
 }
 
@@ -317,4 +337,33 @@ body {
     visibility: hidden;
     top: 0;
     right: 100px;
+}
+
+.left {
+    margin-right: 10px;
+}
+
+.fresh {
+    animation-name: fresh;
+    animation-duration: 1s;
+}
+
+@keyframes fresh {
+    from {
+        transform: scale(0.1);
+    }
+    to {
+        transform: scale(1);
+    }
+}
+
+#description-container {
+    color: rgba(255, 255, 255, 0.9);
+    font-weight: bold;
+    font-family: monospace;
+    font-size: 10pt;
+}
+
+a {
+    color: inherit;
 }

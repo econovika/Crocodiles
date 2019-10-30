@@ -77,47 +77,48 @@ class Placeholder extends Expr {
   }
 }
 
-function deep_copy(expr) {
+function copyExpr(expr) {
 
   if (expr instanceof Var) {
     return new Var(expr.color);
   }
 
   if (expr instanceof Lam) {
-    return new Lam(deep_copy(expr.expr), expr.color);
+    return new Lam(copyExpr(expr.expr), expr.color);
   }
 
   if (expr instanceof App) {
-    return new App(deep_copy(expr.left), deep_copy(expr.right));
+    return new App(copyExpr(expr.left), copyExpr(expr.right));
   }
 
   if (expr instanceof Placeholder) {
+    // No need to move `.fresh` here
     return new Placeholder(expr.id);
   }
 
-  throw new Error("deep_copy: no match");
+  throw new Error("copyExpr: no match");
 }
 
-function changeColorAt (expr, id) {
+function changeColorAt (expr, id, f) {
   if (expr instanceof Var) {
     if (expr.id == id) {
-      expr.color = (expr.color + 1) % colors.length;
+      expr.color = colors.normalize(f(expr.color));
     }
     return expr;
   }
   if (expr instanceof App) {
     return new App(
-      changeColorAt(expr.left, id),
-      changeColorAt(expr.right, id)
+      changeColorAt(expr.left, id, f),
+      changeColorAt(expr.right, id, f)
     );
   }
 
   if (expr instanceof Lam) {
     if (expr.id == id) {
-      expr.color = (expr.color + 1) % colors.length;
+      expr.color = colors.normalize(expr.color + 1);
       return expr;
     } else {
-      return new Lam(changeColorAt(expr.expr, id), expr.color);
+      return new Lam(changeColorAt(expr.expr, id, f), expr.color);
     }
   }
 
@@ -158,18 +159,20 @@ function mapAt (id, expr, f) {
 
 const replaceWithPlaceholder = (id, expr) => {
   return mapAt(id, expr, (old, depth) => {
-    console.log('replacing');
     return new Placeholder();
   });
 };
 
 const insertIntoPlaceholder = (id, expr, target) => {
   return mapAt(id, expr, (ph, depth) => {
-    const newExpr = deep_copy(target);
-    newExpr.color = depth - 1;
-    if (newExpr.color < 0) {
-      newExpr.color = 0;
+    const newExpr = copyExpr(target);
+
+    if (newExpr instanceof Lam) {
+      newExpr.color = colors.normalize(depth);
+    } else if (newExpr instanceof Var) {
+      newExpr.color = colors.normalize(depth - 1);
     }
+
     return newExpr;
   });
 };
@@ -184,7 +187,9 @@ function make_substitution(expr, what, color) {
     if (expr instanceof Var) {
       if (expr.color == color) {
         success = true;
-        return deep_copy(what);
+        const res = copyExpr(what);
+        res.fresh = true;
+        return res;
       }
       return expr;
     }
@@ -198,10 +203,14 @@ function make_substitution(expr, what, color) {
 
     if (expr instanceof Lam) {
       if (expr.color == color) {
-        return deep_copy(expr);
+        return copyExpr(expr);
       } else {
         return new Lam(substitution(expr.expr), expr.color);
       }
+    }
+
+    if (expr instanceof Placeholder) {
+      return expr;
     }
 
     throw new Error("substitution: no match");
@@ -209,6 +218,25 @@ function make_substitution(expr, what, color) {
 
 
   return substitution(expr);
+}
+
+function rotateEggs(expr, colorId) {
+  if (expr instanceof Var) {
+    if (expr.color == colorId) {
+      expr.rotated = true;
+    }
+  }
+
+  if (expr instanceof Lam) {
+    if (expr.color != colorId) {
+      rotateEggs(expr.expr, colorId);
+    }
+  }
+
+  if (expr instanceof App) {
+    rotateEggs(expr.left, colorId);
+    rotateEggs(expr.right, colorId);
+  }
 }
 
 function markRedex(expr) {
@@ -222,11 +250,11 @@ function markRedex(expr) {
 
   if (expr instanceof App) {
     if (expr.left instanceof Lam) {
-      expr.left = deep_copy(expr.left);
-      expr.left.marked = true;
-      expr.right = deep_copy(expr.right);
+      expr.left = copyExpr(expr.left);
+      rotateEggs(expr.left.expr, expr.left.color);
+      expr.left.attacking = true;
+      expr.right = copyExpr(expr.right);
       expr.right.eaten = true;
-      console.log('marked');
       return true;
     } else {
       return markRedex(expr.left) || markRedex(expr.right);
@@ -240,32 +268,33 @@ function markRedex(expr) {
   throw new Error("findRedex: no match");
 }
 
-function make_reduction_step(expr) {
+function reduce(expr) {
   if (expr instanceof Var) {
     return null;
   }
 
   if (expr instanceof Lam) {
-    const t = make_reduction_step(expr.expr);
+    const t = reduce(expr.expr);
     if (t === null) {
       return null;
     } else {
-      return new Lam(t);
+      return new Lam(t, expr.color);
     }
   }
 
   if (expr instanceof App) {
     if (expr.left instanceof Lam) {
       return make_substitution(
+        // TODO: maybe we need another `copyExpr` call here?
         expr.left.expr,
         expr.right,
         expr.left.color
       );
 
     } else {
-      const t_l = make_reduction_step(expr.left);
+      const t_l = reduce(expr.left);
       if (t_l === null) {
-        const t_r = make_reduction_step(expr.right);
+        const t_r = reduce(expr.right);
         if (t_r === null) {
           return null;
         } else {
@@ -277,16 +306,22 @@ function make_reduction_step(expr) {
     }
   }
 
-  throw new Error("make_reduction_step: no match");
+  if (expr instanceof Placeholder) {
+    return null;
+  }
+
+  throw new Error("reduce: no match");
 }
 
+// Unused
+// TODO: consider removing
 function get_all_colors(expr) {
   if (expr instanceof Var) {
-    return [expr.color]; //new Set([1,2,3,1]);
+    return [ expr.color ];
   }
 
   if (expr instanceof Lam) {
-    return [expr.color].concat(get_all_colors(expr.expr));
+    return [ expr.color ].concat(get_all_colors(expr.expr));
   }
 
   if (expr instanceof App) {
@@ -300,6 +335,8 @@ function get_all_colors(expr) {
   throw new Error("get_all_colors: no match");
 }
 
+// Unused
+// TODO: consider removing
 function get_colors_for_placeholder(expr, placeholder_in_expr) {
   let list = [];
   let found_placeholder = false;
@@ -353,8 +390,8 @@ module.exports = {
   Placeholder,
   insertIntoPlaceholder,
   changeColorAt,
-  make_reduction_step,
-  deep_copy,
+  reduce,
+  copyExpr,
   get_colors_for_placeholder,
   make_substitution,
   get_all_colors,
